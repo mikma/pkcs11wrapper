@@ -212,7 +212,7 @@ void timeStamp() {
  * or to throw a PKCS11RuntimeException
  */
 
-jlong ckAssertReturnValueOK(JNIEnv *env, CK_RV returnValue, char* callerMethodName);
+jlong ckAssertReturnValueOK(JNIEnv *env, CK_RV returnValue, const char* callerMethodName);
 void throwOutOfMemoryError(JNIEnv *env);
 void throwPKCS11RuntimeException(JNIEnv *env, jstring jmessage);
 void throwFileNotFoundException(JNIEnv *env, jstring jmessage);

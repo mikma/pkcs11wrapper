@@ -74,7 +74,7 @@ JNIEXPORT void JNICALL Java_iaik_pkcs_pkcs11_wrapper_PKCS11Implementation_connec
   CK_RV rv;
   ModuleData *moduleData;
   jobject globalPKCS11ImplementationReference;
-  char *systemErrorMessage;
+  const char *systemErrorMessage;
   char *exceptionMessage;
 
   const char *libraryNameStr = (*env)->GetStringUTFChars(env, jPkcs11ModulePath, 0);

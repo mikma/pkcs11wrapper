@@ -4181,7 +4181,7 @@ CK_RV notifyCallback(
  * @param env - used to call JNI funktions and to get the Exception class
  * @param returnValue - of the PKCS#11 function
  */
-jlong ckAssertReturnValueOK(JNIEnv *env, CK_RV returnValue, char* callerMethodName)
+jlong ckAssertReturnValueOK(JNIEnv *env, CK_RV returnValue, const char* callerMethodName)
 {
 	jclass jPKCS11ExceptionClass;
 	jmethodID jConstructor;
