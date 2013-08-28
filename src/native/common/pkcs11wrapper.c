@@ -90,18 +90,27 @@ jobject notifyListLock = NULL_PTR;
 #endif /* NO_CALLBACKS */
 
 
+#ifdef ANDROID
+/* Pointer to JavaVM needed in Android */
+JavaVM *g_jvm;
+#endif
+
+
 
 /* ************************************************************************** */
 /* Functions called by the VM when it loads or unloads this library           */
 /* ************************************************************************** */
 
 
-/*
+#ifdef ANDROID
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) 
 {
+  g_jvm = vm;
   return JNI_VERSION_1_2 ;
 }
+#endif
 
+/*
 JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *reserved)
 {
 
@@ -111,6 +120,22 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *reserved)
 /* ************************************************************************** */
 /* Helper functions                                                           */
 /* ************************************************************************** */
+
+#ifdef ANDROID
+jint JNI_GetCreatedJavaVMs(JavaVM **vmBuf,
+                           jsize bufLen,
+                           jsize *nVMs)
+{
+  if (bufLen < 1) {
+    *nVMs = 0;
+    return 0;
+  }
+
+  *nVMs = 1;
+  vmBuf[0] = g_jvm;
+  return 0;
+}
+#endif
 
 /*
  * This method retrieves the function pointers from the module struct. Returns NULL_PTR
