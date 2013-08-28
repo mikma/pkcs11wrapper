@@ -145,7 +145,9 @@ void timeStamp() {
 #endif
 
 #define CK_ASSERT_OK 0L
+#ifndef CKR_PIN_INCORRECT
 #define CKR_PIN_INCORRECT 160L
+#endif
 
 #define CLASS_INFO "iaik/pkcs/pkcs11/wrapper/CK_INFO"
 #define CLASS_VERSION "iaik/pkcs/pkcs11/wrapper/CK_VERSION"
