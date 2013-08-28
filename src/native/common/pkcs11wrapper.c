@@ -598,7 +598,7 @@ JNIEXPORT void JNICALL Java_iaik_pkcs_pkcs11_wrapper_PKCS11Implementation_C_1Ini
 	rv = (*ckpFunctions->C_InitToken)(ckSlotID, ckpPin, ckPinLength, ckpLabel);
 
 	if(ckAssertReturnValueOK(env, rv, __FUNCTION__) == CK_ASSERT_OK)
-	  TRACE1(tag_info, __FUNCTION__,"InitToken return code: %d", rv);
+	  TRACE1(tag_info, __FUNCTION__,"InitToken return code: %ld", rv);
 
 	free(ckpPin);
 	free(ckpLabel);
@@ -757,12 +757,12 @@ JNIEXPORT jlong JNICALL Java_iaik_pkcs_pkcs11_wrapper_PKCS11Implementation_C_1Op
 	  ckNotify = NULL_PTR;
 #endif /* NO_CALLBACKS */
 
-	TRACE2(tag_debug, __FUNCTION__,"  slotID=%u, flags=%x", ckSlotID,ckFlags);
+	TRACE2(tag_debug, __FUNCTION__,"  slotID=%lu, flags=%lx", ckSlotID,ckFlags);
 
 	rv = (*ckpFunctions->C_OpenSession)(ckSlotID, ckFlags, ckpApplication, ckNotify, &ckSessionHandle);
 	if(ckAssertReturnValueOK(env, rv, __FUNCTION__) != CK_ASSERT_OK) { return 0L ; }
 
-	TRACE1(tag_info, __FUNCTION__,"got session, SessionHandle=%u", ckSessionHandle);
+	TRACE1(tag_info, __FUNCTION__,"got session, SessionHandle=%lu", ckSessionHandle);
 
 	jSessionHandle = ckULongToJLong(ckSessionHandle);
 
@@ -805,7 +805,7 @@ JNIEXPORT void JNICALL Java_iaik_pkcs_pkcs11_wrapper_PKCS11Implementation_C_1Clo
 
 	ckSessionHandle = jLongToCKULong(jSessionHandle);
 
-  TRACE1(tag_info, __FUNCTION__, "going to close session with handle %d", jSessionHandle);
+  TRACE1(tag_info, __FUNCTION__, "going to close session with handle %lld", jSessionHandle);
 
 	rv = (*ckpFunctions->C_CloseSession)(ckSessionHandle);
 	if(ckAssertReturnValueOK(env, rv, __FUNCTION__) != CK_ASSERT_OK) { return; }
@@ -1302,13 +1302,13 @@ JNIEXPORT void JNICALL Java_iaik_pkcs_pkcs11_wrapper_PKCS11Implementation_C_1Get
   ckpFunctions = getFunctionList(env, moduleData);
   if (ckpFunctions == NULL_PTR) { return; }
 
-  TRACE3(tag_debug, __FUNCTION__, "hSession=%u, hObject=%u, pTemplate=%p", jSessionHandle, jObjectHandle, jTemplate);
+  TRACE3(tag_debug, __FUNCTION__, "hSession=%llu, hObject=%llu, pTemplate=%p", jSessionHandle, jObjectHandle, jTemplate);
 
 	ckSessionHandle = jLongToCKULong(jSessionHandle);
 	ckObjectHandle = jLongToCKULong(jObjectHandle);
-	TRACE1(tag_debug, __FUNCTION__,"jAttributeArrayToCKAttributeArray now with jTemplate = %d", jTemplate);
+	TRACE1(tag_debug, __FUNCTION__,"jAttributeArrayToCKAttributeArray now with jTemplate = %p", jTemplate);
 	if (jAttributeArrayToCKAttributeArray(env, jTemplate, &ckpAttributes, &ckAttributesLength, jUseUtf8)) { return; }
-	TRACE2(tag_debug, __FUNCTION__,"jAttributeArrayToCKAttributeArray finished with ckpAttribute = %d, Length = %d\n", ckpAttributes, ckAttributesLength);
+	TRACE2(tag_debug, __FUNCTION__,"jAttributeArrayToCKAttributeArray finished with ckpAttribute = %p, Length = %ld\n", ckpAttributes, ckAttributesLength);
 
 	/* first set all pValue to NULL_PTR, to get the needed buffer length */
 	for(i = 0; i < ckAttributesLength; i++) {
@@ -1393,7 +1393,7 @@ JNIEXPORT void JNICALL Java_iaik_pkcs_pkcs11_wrapper_PKCS11Implementation_C_1Get
 			TRACE0(tag_debug, __FUNCTION__, "- found attribute array. going to initialize the buffers of the array.");
 			ckAttributeArray = (CK_ATTRIBUTE_PTR)ckpAttributes[i].pValue;
 			length = ckpAttributes[i].ulValueLen/sizeof(CK_ATTRIBUTE);
-			TRACE1(tag_debug, __FUNCTION__,"allocate mem for attributes in attribute array, length of attribute array = %d\n", ckpAttributes[i].ulValueLen);
+			TRACE1(tag_debug, __FUNCTION__,"allocate mem for attributes in attribute array, length of attribute array = %ld\n", ckpAttributes[i].ulValueLen);
 			if(length == 0){
 				free(ckpAttributes[i].pValue);
 				ckpAttributes[i].pValue = NULL;
@@ -1577,7 +1577,7 @@ JNIEXPORT void JNICALL Java_iaik_pkcs_pkcs11_wrapper_PKCS11Implementation_C_1Fin
   ckpFunctions = getFunctionList(env, moduleData);
   if (ckpFunctions == NULL_PTR) { return; }
 
-	TRACE2(tag_debug, __FUNCTION__,", hSession=%u, pTemplate=%p", jSessionHandle, jTemplate);
+	TRACE2(tag_debug, __FUNCTION__,", hSession=%llu, pTemplate=%p", jSessionHandle, jTemplate);
 
 	ckSessionHandle = jLongToCKULong(jSessionHandle);
 	if (jAttributeArrayToCKAttributeArray(env, jTemplate, &ckpAttributes, &ckAttributesLength, jUseUtf8)) { return; }
@@ -1638,7 +1638,7 @@ JNIEXPORT jlongArray JNICALL Java_iaik_pkcs_pkcs11_wrapper_PKCS11Implementation_
 
 	rv = (*ckpFunctions->C_FindObjects)(ckSessionHandle, ckpObjectHandleArray, ckMaxObjectLength, &ckActualObjectCount);
   if(ckAssertReturnValueOK(env, rv, __FUNCTION__) == CK_ASSERT_OK) {
-    TRACE3(tag_debug, __FUNCTION__, "got ArrayHandle %u limited to %u entries having %u entries", ckpObjectHandleArray, ckMaxObjectLength, ckActualObjectCount);
+    TRACE3(tag_debug, __FUNCTION__, "got ArrayHandle %p limited to %lu entries having %lu entries", ckpObjectHandleArray, ckMaxObjectLength, ckActualObjectCount);
     jObjectHandleArray = ckULongArrayToJLongArray(env, ckpObjectHandleArray, ckActualObjectCount);
   }
   else
@@ -4198,7 +4198,7 @@ jlong ckAssertReturnValueOK(JNIEnv *env, CK_RV returnValue, char* callerMethodNa
 		jErrorCode = ckULongToJLong(returnValue);
 		jPKCS11Exception = (jthrowable) (*env)->NewObject(env, jPKCS11ExceptionClass, jConstructor, jErrorCode);
 		(*env)->Throw(env, jPKCS11Exception);
-		TRACE1(tag_error, callerMethodName, "got %u instead of CKR_OK, going to raise an exception", returnValue);
+		TRACE1(tag_error, callerMethodName, "got %lu instead of CKR_OK, going to raise an exception", returnValue);
 		return jErrorCode ;
 	}
 }
@@ -4606,19 +4606,19 @@ int jAttributeArrayToCKAttributeArray(JNIEnv *env, jobjectArray jArray, CK_ATTRI
 	}
 	jLength = (*env)->GetArrayLength(env, jArray);
 	*ckpLength = jLongToCKULong(jLength);
-	TRACE1(tag_debug, __FUNCTION__, "array length is %d", *ckpLength)
+	TRACE1(tag_debug, __FUNCTION__, "array length is %ld", *ckpLength)
 	*ckpArray = (CK_ATTRIBUTE_PTR) malloc(*ckpLength * sizeof(CK_ATTRIBUTE));
   if (*ckpArray == NULL_PTR && (*ckpLength)!=0) { throwOutOfMemoryError(env); return 1; }
-	TRACE1(tag_debug, __FUNCTION__,"converting %d attributes", jLength);
+	TRACE1(tag_debug, __FUNCTION__,"converting %lld attributes", jLength);
 	for (i=0; i<(*ckpLength); i++) {
-		TRACE1(tag_debug, __FUNCTION__,", getting %d. attribute", i);
+		TRACE1(tag_debug, __FUNCTION__,", getting %ld. attribute", i);
 		jAttribute = (*env)->GetObjectArrayElement(env, jArray, i);
-		TRACE2(tag_debug, __FUNCTION__,", jAttribute = %d, converting %d. attribute", jAttribute, i);
+		TRACE2(tag_debug, __FUNCTION__,", jAttribute = %p, converting %ld. attribute", jAttribute, i);
 		(*ckpArray)[i] = jAttributeToCKAttribute(env, jAttribute, jUseUtf8);
 	}
 	TRACE0(tag_debug, __FUNCTION__,"Converted template with following types: ");
 	for (i=0; i<(*ckpLength); i++) {
-		TRACE1(tag_debug, __FUNCTION__,"0x%X", (*ckpArray)[i].type);
+		TRACE1(tag_debug, __FUNCTION__,"0x%lX", (*ckpArray)[i].type);
 	}
   TRACE0(tag_call, __FUNCTION__, "exiting ");
   return 0;
@@ -5589,7 +5589,7 @@ CK_ATTRIBUTE jAttributeToCKAttribute(JNIEnv *env, jobject jAttribute, jboolean j
 	jFieldID = (*env)->GetFieldID(env, jAttributeClass, "type", "J");
 	assert(jFieldID != 0);
 	jType = (*env)->GetLongField(env, jAttribute, jFieldID);
-	TRACE1(tag_debug, __FUNCTION__,"  type=0x%X", jType);
+	TRACE1(tag_debug, __FUNCTION__,"  type=0x%llX", jType);
 
 	/* get pValue */
 	TRACE0(tag_debug, __FUNCTION__,"- getting pValue field");
@@ -6057,7 +6057,7 @@ void jObjectToPrimitiveCKObjectPtrPtr(JNIEnv *env, jobject jObject, CK_VOID_PTR 
 	} else if ((*env)->IsInstanceOf(env, jObject, jLongClass)) {
 		*ckpObjectPtr = jLongObjectToCKULongPtr(env, jObject);
 		*ckpLength = sizeof(CK_ULONG);
-		TRACE1(tag_debug, __FUNCTION__,"- converted long value %X", *((CK_ULONG *) *ckpObjectPtr));
+		TRACE1(tag_debug, __FUNCTION__,"- converted long value %lX", *((CK_ULONG *) *ckpObjectPtr));
 	} else if ((*env)->IsInstanceOf(env, jObject, jBooleanClass)) {
 		*ckpObjectPtr = jBooleanObjectToCKBBoolPtr(env, jObject);
 		*ckpLength = sizeof(CK_BBOOL);
@@ -6093,7 +6093,7 @@ void jObjectToPrimitiveCKObjectPtrPtr(JNIEnv *env, jobject jObject, CK_VOID_PTR 
 	} else if ((*env)->IsInstanceOf(env, jObject, jIntegerClass)) {
 		*ckpObjectPtr = jIntegerObjectToCKULongPtr(env, jObject);
 		*ckpLength = sizeof(CK_ULONG);
-		TRACE1(tag_debug, __FUNCTION__,"- converted integer value %X", *((CK_ULONG *) *ckpObjectPtr));
+		TRACE1(tag_debug, __FUNCTION__,"- converted integer value %lX", *((CK_ULONG *) *ckpObjectPtr));
 	} else if ((*env)->IsInstanceOf(env, jObject, jBooleanArrayClass)) {
 		jBooleanArrayToCKBBoolArray(env, jObject, (CK_BBOOL**)ckpObjectPtr, ckpLength);
 		TRACE0(tag_debug, __FUNCTION__, "- converted boolean array");
