@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=iso-8859-1">
+<title>Changes.html</title>
+</head>
+<body>
+  
+<table border="0" width="100%">
+<tr>
+<td width="1%"><a href="http://jce.iaik.tugraz.at/"><img src=
+"images/siclogo.jpg" alt="SIC Logo" border="0"></a></td>
+<td width="6%"></td>
+<td width="1%"><a href="http://jce.iaik.tugraz.at/"><img src=
+"images/iaik_logo.gif" alt="IAIK Logo" border="0"></a></td>
+<td width="12%"></td>
+<td width="82%">
+<h1>Change History</h1>
+</td>
+</tr>
+</table>
+
+  
+<p>This is a list of changes between the different versions of the
+PKCS#11 wrapper.</p>
+<h3>Changes introduced in 1.3</h3>
+
+<ul>
+<li>Labels and PINs are now saved and interpreted using UTF8 encoding per default as given in the PKCS#11 specification. Convert
+labels or PINs that contain special characters, e.g. by using the provided demos in the util package of the examples. Use <em>slot.setUtf8Encoding(false);</em>
+to continue using the old character encoding for the given slot.</li>
+<li>Attribute arrays can now be filled with any iaik.pkcs.pkcs11.object.Object. Therefore wrap/unwrap templates
+are much easier to use for example.</li>
+<li>The Attribute API now offers an alternative way of selecting attributes. The new methods 
+<em>setValue(java.lang.Object)</em> as well as <em>getAttribute(...)</em>, <em>putAttribute(...)</em>, and 
+<em>removeAttribute(...)</em> allow for attribute management at runtime. It is no more necessary to know each
+and every needed attribute at compile time.</li>
+<li>The path to the native library of the IAIK PKCS#11 Wrapper can now be specified as relative path.</li>
+</ul>
+
+<h3>Changes introduced in 1.2.18</h3>
+
+<ul>
+<li>Fix: check attribute length in GetAttributeValue to prevent OutOfMemoryException if PKCS#11 module doesn't 
+return correct return code although attribute length is -1</li>
+<li>Fix: adapt code to handle null objects under AIX if allocating memory of size 0</li>
+<li>Added PKCS11 v2.20 object types <em>WTLSCertificate</em>, <em>UserInterface</em> and <em>Mechanism</em></li>
+<li>Added X9.42 DH primitives</li>
+<li>Added EC primitives</li>
+<li>Refactored demos to be more readable</li>
+</ul>
+
+<h3>Changes introduced in 1.2.17</h3>
+
+<ul>
+<li>Added 64-bit version for Windows.</li>
+<li>Added new parameter classes for CBC key derivation, iaik.pkcs.pkcs11.parameters.DesCbcEncryptDataParameters,
+iaik.pkcs.pkcs11.parameters.AesCbcEncryptDataParameters, iaik.pkcs.pkcs11.parameters.CbcEncryptDataParameters,
+iaik.pkcs.pkcs11.wrapper.CK_DES_CBC_ENCRYPT_DATA_PARAMS and iaik.pkcs.pkcs11.wrapper.CK_AES_CBC_ENCRYPT_DATA_PARAMS.</li>
+<li>Added classes for in PKCS#11 v2.20 newly invented attributes, eg. CKA_WRAP_TEMPLATE.</li>
+<li>Fixed incorrect time handling for clock on token, time was in UTC although specified as local time.</li>
+<li>Invented new method iaik.pkcs.pkcs11.objects.Object.getAttributeValues, which reads the attributes
+in a similar way as iaik.pkcs.pkcs11.objects.Object.getAttributeValue, but a complete array at once.
+This can lead to performance improvements.</li>
+<li>Added new method iaik.pkcs.pkcs11.Module.getInstance(String pkcs11ModuleName, String pkcs11WrapperPath),
+which enables to specify the absolute path to the IAIK PKCS#11 Wrapper library when instantiating the PKCS#11 module.</li>
+</ul>
+
+<h3>Changes introduced in 1.2.16</h3>
+
+<ul>
+<li>added a Mac OS X version. special thanks to Marc Nelson from 
+    Nelson Brothers Racing.</li>
+<li>fixed a bug in the equals method of the Attribute class which may cause
+    a NullPointerException for objects with sensitive attributes.</li>
+<li>improved error handling in native code in case the system runs out
+    of memrory, i.e. if malloc returns NULL. the wrapper now tries to throw
+    an java.lang.OutOfMemoryError.</li>
+<li>improved handling or allocated structures to avoid memory leaks with
+    complex mechanism parameters.</li>
+</ul>
+
+<h3>Changes introduced in 1.2.15</h3>
+
+<ul>
+<li>added 64-bit versions for Linux (x86-64) and Solaris (SPARC v9)</li>
+<li>compiled native library for Solaris with SUN C compiler.
+    the wrapper will now run on a Solaris system without libgcc.</li>
+<li>set object class attribute in constructor of DomainParameters object.</li>
+</ul>
+
+<h3>Changes introduced in 1.2.14</h3>
+
+<ul>
+<li>added constants for mask generation functions based on SHA-256/384/512</li>
+</ul>
+
+
+<h3>Changes introduced in 1.2.13</h3>
+
+<ul>
+<li>fixed an issue in the native part of Linux and Solaris. 
+    this issue regarding handling or error messages may crash or halt
+    th Java VM if the application tries to load a module which does
+    not exist. it was cause by calling free() on the result of
+    dlerror().</li>
+<li>removed GNU Makefiles, use the ANT scripts instead.</li>
+<li>adapted applet demo to use extension installation feature of 
+    Java plugin.</li>
+<li>added constants from version 2.20 of PKCS#11.</li>
+<li>added blowfish and twofish key classes</li>
+</ul>
+
+<h3>Changes introduced in 1.2.12</h3>
+
+<ul>
+<li>fixed toString() method of the GenericTemplate object class
+to provide a better readable output.</li>
+
+<li>removed some unused local variables in classes of package
+iaik.pkcs.pkcs11.objects.</li>
+
+<li>extended JavaDoc in Module class</li>
+
+<li>fixed toString() of Version class to display all version
+numbers as positiv integers</li>
+
+<li>fixed a bug in the ReadDataObject demo</li>
+
+<li>added demo for creating self-signed certificate</li>
+</ul>
+
+<h3>Changes introduced in 1.2.11</h3>
+
+<ul>
+<li>fixed a bug in a date conversion used for start date and end
+date attributes of keys.</li>
+</ul>
+
+<h3>Changes introduced in 1.2.10</h3>
+
+<ul>
+<li>modified some object classes to be more robust against
+missing attributes</li>
+</ul>
+
+<h3>Changes introduced in 1.2.9</h3>
+
+<ul>
+<li>changed toString() methods of certain objects to be more
+robust agains missing attributes</li>
+
+<li>some minor improvments in native code</li>
+</ul>
+
+<h3>Changes introduced in 1.2.8</h3>
+
+<ul>
+<li>fixed bug in C_Sign which was introduced in version 1.2.8
+workaround</li>
+</ul>
+
+<h3>Changes introduced in 1.2.7</h3>
+
+<ul>
+<li>added workaround in native part to avoid bug in sign
+operation of certain PKCS#11 modules (e.g. iButton)</li>
+
+<li>more sample code in the usage documentation</li>
+</ul>
+
+<h3>Changes introduced in 1.2.6</h3>
+
+<ul>
+<li>fixed method getMessage() in PKCS11Exception to provide error
+name reliably even in multithreaded applications</li>
+
+<li>small improvement in native implementation of C_GetSlotList
+which also avoids a bug in iKey 2032 drivers to occur</li>
+</ul>
+
+<h3>Changes introduced in 1.2.5</h3>
+
+<ul>
+<li>added methods to MechanismInfo for logic combinations (and,
+or, not)</li>
+
+<li>fixed bug in native part to handle attributes correctly that
+are new in PKCS#11 v2.11</li>
+
+<li>changed license to a more liberal Apache style license</li>
+
+<li>moved some simple helper classes for demos from demo/test to
+demo/src/demo/pkcs/pkcs11.</li>
+</ul>
+
+<h3>Changes introduced in 1.2.4</h3>
+
+<ul>
+<li>fixed method supports(MechanismInfo) in MechanismInfo</li>
+</ul>
+
+<h3>Changes introduced in 1.2.3</h3>
+
+<ul>
+<li>additional constructor in iaik.pkcs.pkcs11.MechanismInfo and
+made constructors public</li>
+</ul>
+
+<h3>Changes introduced in 1.2.2</h3>
+
+<ul>
+<li>implemented equals and hashCode in iaik.pkcs.pkcs11.Module
+and in iaik.pkcs.pkcs11.wrapper.PKCS11Implementation</li>
+</ul>
+
+<h3>Changes introduced in 1.2.1</h3>
+
+<ul>
+<li>a littel performance improvement in the native part</li>
+
+<li>included an applet demo</li>
+</ul>
+
+<h3>Changes introduced in 1.2</h3>
+
+<ul>
+<li>all PKCS#11 objects and parameters are now deep
+cloneable</li>
+
+<li>improved attribute handling of objects</li>
+
+<li>fixed a bug in the X942DHParams class</li>
+
+<li>improved demo samples</li>
+
+<li>renamed isLocal() to getLocal() in Key class to be
+consistent</li>
+
+<li>fixed some typos</li>
+</ul>
+
+<h3>Changes introduced in 1.1</h3>
+
+<ul>
+<li>support for PKCS#11 v2.11 including new key and parameters
+classes</li>
+
+<li>improved demo samples</li>
+
+<li>fixed a bug in the native part for CK_SSL3_KEY_MAT_OUT
+conversion</li>
+</ul>
+
+<h3>Changes introduced in 1.0</h3>
+
+<ul>
+<li>fixed problems and bugs in some parameter classes for certain
+mechanisms.</li>
+
+<li>added some more demos: decrypting PKCS#7 enveloped data,
+signing a certificate request, signing a CRL and signing an OCSP
+request.</li>
+</ul>
+
+<h3>Changes introduced in 1.0Beta1</h3>
+
+<ul>
+<li>improved the wrapper to pass back data in the parameters of
+SSL and other mechanisms.</li>
+
+<li>added some more demos. among others, one that shows how to
+sign data using a PKCS#7 signed data object and another that
+signs a certificate.</li>
+
+<li>added a generic search template to enable more advanced
+search operations.</li>
+
+<li>put a simple example in the Usage document.</li>
+
+<li>reorganized native part into platform dependent and portable
+code. eases porting to new platforms.</li>
+
+<li>improved synchronization in native part.</li>
+
+<li>added methods to Functions class the check the type of a
+mechanism.</li>
+
+<li>implemented hashCode() and equals() method of most
+classes.</li>
+</ul>
+
+<h3>Changes introduced in 1.0Alpha8</h3>
+
+<ul>
+<li>introduced simple default implementations for InitializeArgs
+and MutexHandler.</li>
+
+<li>improved some demos.</li>
+
+<li>fixed a mojor bug in the native part which may cause the
+program to hang upon closing a session.</li>
+
+<li>fixed some cosmetic bugs in code and docu.</li>
+</ul>
+
+<h3>Changes introduced in 1.0Alpha7</h3>
+
+<ul>
+<li>introduced this changes list.</li>
+
+<li>fixed a mojor bug in the native part of
+C_GenerateKeyPair.</li>
+
+<li>fixed some cosmetic bugs in code and docu.</li>
+</ul>
+
+<h3>Changes introduced in 1.0Alpha6</h3>
+
+<ul>
+<li>rework project structure to make structure clearer and more
+intuitive.</li>
+
+<li>improved initialization arguments handling.</li>
+
+<li>added support for parameter objects that return values from
+certain mechanisms; e.g. some special SSL mechanisms for
+generating key material.</li>
+</ul>
+
+<h3>Changes introduced in 1.0Alpha5</h3>
+
+<ul>
+<li>introduced parameters package to make handling of parameters
+for certain mechanisms easier.</li>
+
+<li>added solaris support out-of-the box and included precompiled
+shard library.</li>
+</ul> 
+<hr>
+<center>Copyright (c) 2002-2003 by IAIK. Copyright (C) 2003-2013
+Stiftung SIC. All rights reserved.</center>
+</body>
+</html>
+

@@ -1,0 +1,31 @@
+<html>
+<body>
+This package contains all classes for objects and attributes as known from
+PKCS#11. For each object defined by PKCS#11 (v2.20) there is a corresponding
+class in this package. Additionally, there are classes for handling the
+attributes of objects. As know from PKCS#11, each object possesses certain
+attributes. For each attribute in an object there is a <code>get&lt;
+attributename>()</code> method to get the attribute. Unfortunately, not all
+PKCS#11 modules stick exactly to the standard concerning the attributes. Objects
+from some modules simply lack some attributes that they should have. Therefore we
+decided to encapsulate the attributes in an own class to ensure interoperability
+as far as possible. After an application read an object from the token, it can
+get the attributes and ask the attributes if they are really present in this
+object and if their values are sensitive. Besides the different objects and
+attributes, there is the <code>KeyPair</code> class. It is the only class that
+has no counterpart in PKCS#11. We introduced it for convenience reasons mainly. It
+is nicer to get a <code>KeyPair</code> than an array with two keys as a result.
+<br>
+The library uses objects from this class for two purposes. First, to represent
+objects that are present on the token or in the current session. And second, as
+templates for object search and object manipulation operations.<br> Notice that
+objects of these classes are only snapshots of the objects on the token at the
+time these Java objects are created. This means, that the attributes values are
+loaded from the token in the constructor of these classes. And if the
+application sets attributes to new values it must write these values back to the
+token for the changes to take effect on the token. For this purpose, use the
+<code> setAttributeValues(Object,Object)</code> method of a <code>Session</code>
+object. An application may derive new classes from these object classes to
+create classes for vendor-defined object types.
+</body>
+</html>

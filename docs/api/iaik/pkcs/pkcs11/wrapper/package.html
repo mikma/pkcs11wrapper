@@ -1,0 +1,29 @@
+<html>
+<body>
+This package contains the first (lowest) Java layer of the PKCS#11 wrapper. It
+is a straight-forward mapping of the PKCS#11 API from the C programming language
+to the Java programming language. As a result, it is not really object oriented
+in its style and handling as know from Java. Anyone familiar with PKCS#11 in C,
+will find this layer easy to use. All methods of the <code>PKCS11</code>
+interface have the same name as the corresponding functions of PKCS#11, and all
+classes have the same name as the corresponding data structures of PKCS#11. The
+developer can use this layer directly or may use the next higher level layer
+that is located in the <code >iaik.pkcs.pkcs11</code> package and in the <code>
+iaik.pkcs.pkcs11.objects </code> package. If the application uses this layer
+directly, it calls <code >PKCS11Connector.connectToPKCS11Module(String)</code>
+(passing the PKCS#11 module as parameter; e.g. "C:\Program
+Files\Drivers\mypkcs11driver.dll") to get an implementation of the <code>PKCS11
+</code> interface. Through this object, the application accesses all the
+functionality of the underlaying PKCS#11 module.<br> The main differences between
+this API to the original PKCS#11 API are:<br> * The functions in this package do
+not return return-values as know from PKCS#11. If the underlying PKCS#11 module
+returns a value other than CKR_OK, the wrapper throws an <code>PKCS11Exception
+</code> which holds the return value for information.<br> * Where PKCS#11
+functions use pointers to return various objects, such objects and values are
+returned directly as the regular return value of the according function.<br> *
+In Java, it is not necessary to store the length of an array separately. Every
+array in Java 'knows' its own length.<br> <br> Any PKCS#11 module compliant to
+PKCS#11 version 2.x should be compatible to this API. We used PKCS#11 version
+2.20 as a basis for development.
+</body>
+</html>

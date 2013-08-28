@@ -1,0 +1,18 @@
+<html>
+<body>
+This package provides a object oriented API to access PKCS#11 modules. An
+application can access PKCS#11 through this API rather than working directly
+with the <code>iaik.pkcs.pkcs11.wrapper</code> package. If an application uses
+this object oriented API, it does not need to work with any of the classes or
+interfaces from the <code>iaik.pkcs.pkcs11.wrapper</code> package at all. All
+the functionality is available on both levels. This package just provides the
+'functional' components of the API; all objects are in the <code>
+iaik.pkcs.pkcs11.object</code> package. In principal, every application starts
+using this package by calling <code> Module.getInstance(String)</code> and
+passing the name of the underlying PKCS#11 module as a parameter; e.g.
+"C:\Program Files\Drivers\myPkcs11Driver.dll". Do not forget to call the <code>
+initialize(InitializeArgs)</code> method on this module before calling any other
+method. Even though it is object oriented, it is a relatively straight-forward
+object model of PKCS#11.
+</body>
+</html>

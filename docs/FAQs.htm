@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=iso-8859-1">
+<title>FAQs.html</title>
+</head>
+<body>
+  
+  <table border="0" width="100%">
+  <tr>
+  <td width="1%"><a href="http://jce.iaik.tugraz.at/"><img src=
+  "images/siclogo.jpg" alt="SIC Logo" border="0"></a></td>
+  <td width="6%"></td>
+  <td width="1%"><a href="http://jce.iaik.tugraz.at/"><img src=
+  "images/iaik_logo.gif" alt="IAIK Logo" border="0"></a></td>
+  <td width="12%"></td>
+  <td width="82%">
+  <h1>Frequently asked Questions (FAQs)</h1>
+  </td>
+  </tr>
+  </table>
+
+    <p>Here we provide answers to frequently asked questions.
+    These may help you to solve problems quickly.
+    </p>
+
+
+  <h2><a href="#1">1</a>. Errors</h2>
+
+  <h3><a href="#Q1_1">Q1.1</a>: Why do I always get an
+  <code>java.lang.UnsatisfiedLinkError: no pkcs11wrapper in java.library.path</code>?</h3>
+  <h3><a href="#Q1_2">Q1.2</a>: What does the exception with the error code <code>CKR_OPERATION_NOT_INITIALIZED</code>
+    mean?</h3>    
+  <h3><a href="#Q1_3">Q1.3</a>: When running some of the samples which try to generate keys, I get an
+    <code>iaik.pkcs.pkcs11.wrapper.PKCS11Exception: CKR_ATTRIBUTE_TYPE_INVALID</code>. What is wrong?</h3>
+  <h3><a href="#Q1_4">Q1.4</a>: I use the PKCS#11 Wrapper from within an applet. The applet works in principle,
+    but when a press the reload button in my browser, I get an
+    <code>java.lang.UnsatisfiedLinkError: Native Library pkcs11wrapper.dll already loaded in another classloader</code>. 
+    What causes this problem and how can i solve it?</h3>
+
+  <h2><a href="#2">2</a>. Strange Behavior</h2>
+
+  <h3><a href="#Q2_1">Q2.1</a>: My application uses <code>findObjectsInit</code>, <code>findObjects</code> and
+    <code>findObjectsFinal</code> to search for certain objects and seems to get objects that
+    do not match the template. Is that a bug of the wrapper?</h3>
+  <h3><a href="#Q2_2">Q2.2</a>: My application uses <code>findObjectsInit</code>, <code>findObjects</code>
+    and <code>findObjectsFinal</code> to search for certain objects. The find operation
+    does not return any objects, even if there are objects on the token that match
+    the template. What is wrong?</h3>
+  <h3><a href="#Q2_3">Q2.3</a>: When I start a demo program to sign something,
+    I get the response that there is no key for signing on the token.
+    However, I know that there is a signature key on the card. The <code>GetInfo</code> demo
+    even shows it. Is this a bug?</h3>
+
+  <h2><a href="#3">3</a>. How Can I...</h2>
+
+  <h3><a href="#Q3_1">Q3.1</a>: How can I import my private key and certificate into the smart card?</h3>
+  <h3><a href="#Q3_2">Q3.2</a>: How can I export certificates from my smart card?</h3>
+
+  <hr>
+
+  <h2><a name="1"></a>1. Errors</h2>
+
+  <h3><a name="Q1_1"></a>Q1.1: Why do I always get an
+  <code>java.lang.UnsatisfiedLinkError: no pkcs11wrapper in java.library.path</code>?</h3>
+    <p>It seems that you do not have the pkcs11wrapper.dll (or libpkcs11wrapper.so
+    under Unix) in your search path.
+    You can provide such a path directly to the Java VM setting the <code>java.library.path</code>
+    system property like:
+    <p><code>
+    java -Djava.library.path==../bin/&ltwindows|unix&gt/&ltplatform&gt/release;.
+    -cp classes;../bin/iaikPkcs11Wrapper.jar
+    demo.pkcs.pkcs11.GetInfo cryptoki.dll</code><p>
+    
+    where <code>../bin/&ltwindows|unix&gt/&ltplatform&gt/release</code> is the path where the
+    pkcs11wrapper.dll (or libpkcs11wrapper.so under unix) file is. You can also place the file
+    in the folder for binary files of your Java Runtime Environment; e.g. the <code>jre/bin</code> folder.
+    Alternatively, you can also place the file pkcs11wrapper.dll in the system directory of Windows.
+    On Unix systems you can place the libpkcs11wrapper.so in a <code>lib</code> directory of the system.
+    </p>
+
+  <h3><a name="Q1_2"></a>Q1.2: What does the exception with the error code
+      <code>CKR_OPERATION_NOT_INITIALIZED</code> mean?</h3>
+    <p>This normally means that the PKCS#11 driver you are using has a bug. We observed
+      this bug with the drivers for iButton (version 1.01) and with older drviers
+      for Datakey cards and iKey 2000 series tokens. For Datakey cards and iKey 2000
+      series tokens there are already drivers that fix this bug.<br>
+      Bug details: The wrapper asks the driver for the required buffer length for
+      returned data. It uses the method specified in the PKCS#11 standard - it passes
+      NULL_PTR as buffer when calling the driver function (e.g. C_Sign). The driver
+      must answer with the required buffer length, but it must not abort any active
+      operation (e.g. signing). Thereafter, the wrapper allocates the required buffer
+      and calls the function (e.g. C_Sign) a second time, providing the appropriate
+      buffer. Now the driver should process the operation and finalize it if appropriate.
+      Drivers with that bug abort the active operation after the first (query buffer
+      length) call. According to the standard they must not do this.<br>
+      If you want to do a workaround, this is possible. You have to modify the function
+      <code>Java_iaik_pkcs_pkcs11_wrapper_PKCS11Implementation_C_1Sign</code> in the file
+      <code>pkcs11wrapper.c</code>. Instead of asking for the required buffer length,
+      modify the wrapper to use a buffer with a sufficient length. Have a look the
+      source code, you will quickly see what has to be done. To anticipate the question:
+      No, this workaround will not become part of the next release. We do not include
+      any code which's only purpose is to workaround bugs of third-party products.
+      Ask the vendor of the product to fix the bug.</p>
+
+  <h3><a name="Q1_3"></a>Q1.3: When running some of the samples which try to generate keys, I get an
+    iaik.pkcs.pkcs11.wrapper.PKCS11Exception: CKR_ATTRIBUTE_TYPE_INVALID. What is wrong?</h3>
+    <p>We had similar problems with certain cards; e.g. the Rainbow iKey2032 and DataKey cards.
+    This is due to bugs in drivers. As workaround you can try to set the class and key-type
+    attributes as not present. This may look like this:
+    <code><p>
+    secretEnrcyptionKeyTemplate.getObjectClass().setPresent(false);<br>
+    secretEnrcyptionKeyTemplate.getKeyType().setPresent(false);
+    </code><p>
+    maybe the driver accepts the key template if you try this.</p>
+
+  <h3><a name="Q1_4">Q1.4</a>: I use the PKCS#11 Wrapper from within an applet. The applet works in principle,
+    but when a press the reload button in my browser, I get an
+    <code>java.lang.UnsatisfiedLinkError: Native Library pkcs11wrapper.dll already loaded in another classloader</code>. 
+    What causes this problem and how can i solve it?</h3>
+    <p>The Java VM causes this error. SUN's Java VMs have the restriction that they cannot handle native libraries
+    from more than one classloader. You may have a look at the bug database at SUN's Java web site and search for
+    the bug entries with the IDs 4286309, 4642062 and 4299094. According to the comments from SUN, according to
+    the fact that they consider this a restriction (or a feature) rather than a bug, and that this bug has been
+    there for many years, it is unlikely that this will be fixed soon. The only workaround that we are aware of is
+    to place the class which directly accesses the native library 
+    (i.e. <code>iaik.pkcs.pkcs11.wrapper.PKCS11Implementation</code>) or the complete jar file
+    which contains this class (i.e. <code>iaikPkcs11Wrapper.jar</code>) into the 
+    <code>jre/lib/ext</code> directory of the Java Runtime.
+    Note that this problem may also occur in application servers. The solution will be analogous there. 
+    <br>However, we have heard that there are other VMs (like Oracle) which do not contain this bug.
+
+
+  <h2><a name="2"></a>2. Strange Behavior</h2>
+
+  <h3><a name="Q2_1"></a>Q2.1: My application uses <code>findObjectsInit</code>,
+    <code>findObjects</code> and <code>findObjectsFinal</code> to search for certain
+    objects and seems to get objects that do not match the template. Is that a bug
+    of the wrapper?</h3>
+    <p>No, this is not a bug of the wrapper. It is a bug of the PKCS#11 driver that
+      you use. We found such bugs in drivers for DataKey cards and iKey 2000 series
+      tokens. </p>
+
+  <h3><a name="Q2_2"></a>Q2.2: My application uses <code>findObjectsInit</code>,
+    <code>findObjects</code> and <code>findObjectsFinal</code> to search for certain
+    objects. The find operation does not return any objects, even if there are objects
+    on the token that match the template. What is wrong?</h3>
+    <p>It is a bug of the PKCS#11 driver that you use. We found such bugs in drivers
+      for DataKey cards and iKey 2000 series tokens. </p>
+
+  <h3><a name="Q2_3"></a>Q2.3: When I start a demo program to sign something,
+    I get the response that there is no key for signing on the token.
+    However, I know that there is a signature key on the card. The <code>GetInfo</code> demo
+    even shows it. Is this a bug?</h3>
+    <p>Yes, it is a bug in the find operations of the PKCS#11 driver that you use.
+      We found such bugs in drivers for DataKey cards and iKey 2000 series tokens. </p>
+
+
+  <h2><a name="3"></a>3. How Can I...</h2>
+
+  <h3><a name="Q3_1"></a>Q3.1: How can I import my private key and certificate into the smart card?</h3>
+    <p>There is a demo included to do that. It is called <code>UploadPrivateKey</code>.</p>
+
+  <h3><a name="Q3_2"></a>Q3.2: How can I export certificates from my smart card?</h3>
+    <p>Extract the DER encoding (value attribute) of the certificate with</p>
+    	<p><code>certificate.getValue().getByteArrayValue();</code></p>
+    	<p>and write this bytes to a file like this:</p>
+    	<p><code>FileOutputStream certificateDumpStream = new FileOutputStream(certificateDumpFilename);<br>
+        certificateDumpStream.write(value);<br>
+        certificateDumpStream.flush();<br>
+        certificateDumpStream.close();</code></p>
+
+  <hr>
+  <center>Copyright (c) 2002-2003 by IAIK. Copyright (C) 2003-2013
+  Stiftung SIC. All rights reserved.</center>
+
+</body>
+</html>

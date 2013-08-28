@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=iso-8859-1">
+<title>Readme.html</title>
+</head>
+<body>
+  
+<table border="0" width="100%" summary="Logos and Title">
+<tr>
+<td width="1%"><a href="http://jce.iaik.tugraz.at/"><img src=
+"images/siclogo.jpg" border="0" alt="SIC Logo"></a></td>
+<td width="6%"></td>
+<td width="1%"><a href="http://jce.iaik.tugraz.at/"><img src=
+"images/iaik_logo.gif" alt="IAIK Logo" border="0"></a></td>
+<td width="12%"></td>
+<td width="82%">
+<h1>IAIK PKCS#11 Wrapper</h1>
+Version 1.3</td>
+</tr>
+</table>
+  
+<p>This is a Java library which makes PKCS#11 (also known as Cryptoki) 
+modules accessible from within Java. 
+A PKCS#11 module is a software library. It
+usually comes with hardware security modules (HSM), smart cards
+and crypto tokens (e.g. USB tokens). Thus, the PKCS#11 Wrapper
+provides Java software access to almost any crypto hardware. For
+example, a Java application can use it to integrate a HSM or a
+smart card to create digital signatures, to decrypt data or to
+unwrap keys.</p>
+<p>This library does <b>not</b> contain a provider implementation
+for the Java Cryptographic Architecture (JCA) framework. However,
+there is a different product which provides this &mdash; the <a
+href="http://jce.iaik.tugraz.at/sic/Products/Core-Crypto-Toolkits/PKCS_11_Provider">IAIK
+PKCS#11 Provider</a>.</p>
+<p>The PKCS#11 Wrapper consists of a Java part consisting of Java
+classes and a native part which is a shared library. The native
+part is written in ANSI-C. It is precompiled for Windows,
+Linux, Solaris 8/9/10 and Mac OS X </p>
+<p>The <a href="Introduction.pdf">introduction document</a> gives a
+brief introduction into the architecture of the library.</p>
+<p>There is a <a href="ProgrammerManual.pdf">programmer's manual</a>
+giving a quick introduction for software developers. More details 
+about the API and its use is in the 
+<a href="api/index.html">JavaDoc</a> of the API.</p>
+<p>The <a href="FAQs.htm">FAQs</a> provide answers to
+frequently asked questions and provide solutions for common
+problems.</p>
+<p>The <code>src/java</code> directory contains the Java part of the
+library and the <code>examples</code> directory contains some demo
+programs. Please note that some of the samples use the 
+<a href="http://jce.iaik.tugraz.at/sic/Products/Core-Crypto-Toolkits/JCA_JCE">IAIK-JCE</a>
+library which is <b>not</b> part of the IAIK PKCS#11 Wrapper.
+There is also a sample applet in <code>applet-demo</code>
+ which shows the usage of the wrapper in an applet.
+The <code>src/native</code> directory contains the native
+part of the library; i.e. the C source code of the shared library
+<code>pkcs11wrapper</code>. In the <a href=
+"Changes.html">changes</a> file, there is a list of all changes
+between the different versions of the wrapper. The best of all,
+we provide the IAIK PKCS#11 Wrapper under the terms of an Apache style
+license. This means, it can be used for free even in commercial
+environments.
+<hr>
+Stiftung SIC. All rights reserved.</center>
+</body>
+</html>
