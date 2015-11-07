@@ -50,71 +50,65 @@ import iaik.pkcs.pkcs11.objects.X509PublicKeyCertificate;
  */
 public class KeyAndCertificate {
 
-	/**
-	 * The key.
-	 */
-	protected Key key_;
+  /**
+   * The key.
+   */
+  protected Key key_;
 
-	/**
-	 * This optional certificate.
-	 */
-	protected X509PublicKeyCertificate certificate_;
+  /**
+   * This optional certificate.
+   */
+  protected X509PublicKeyCertificate certificate_;
 
-	/**
-	 * Creates a new object that holds the given key and certificate.
-	 *
-	 * @param key The key.
-	 * @param certificate The certificate.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public KeyAndCertificate(Key key, X509PublicKeyCertificate certificate) {
-		key_ = key;
-		certificate_ = certificate;
-	}
+  /**
+   * Creates a new object that holds the given key and certificate.
+   * 
+   * @param key
+   *          The key.
+   * @param certificate
+   *          The certificate.
+   */
+  public KeyAndCertificate(Key key, X509PublicKeyCertificate certificate) {
+    key_ = key;
+    certificate_ = certificate;
+  }
 
-	/**
-	 * Returns the certificate.
-	 *
-	 * @return The certificate.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public X509PublicKeyCertificate getCertificate() {
-		return certificate_;
-	}
+  /**
+   * Returns the certificate.
+   * 
+   * @return The certificate.
+   */
+  public X509PublicKeyCertificate getCertificate() {
+    return certificate_;
+  }
 
-	/**
-	 * Returns the key.
-	 *
-	 * @return The key.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public Key getKey() {
-		return key_;
-	}
+  /**
+   * Returns the key.
+   * 
+   * @return The key.
+   */
+  public Key getKey() {
+    return key_;
+  }
 
-	/**
-	 * Sets the certificate.
-	 *
-	 * @param certificate The certificate.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public void setCertificate(X509PublicKeyCertificate certificate) {
-		certificate_ = certificate;
-	}
+  /**
+   * Sets the certificate.
+   * 
+   * @param certificate
+   *          The certificate.
+   */
+  public void setCertificate(X509PublicKeyCertificate certificate) {
+    certificate_ = certificate;
+  }
 
-	/**
-	 * Sets the key.
-	 *
-	 * @param key The key.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public void setKey(Key key) {
-		key_ = key;
-	}
+  /**
+   * Sets the key.
+   * 
+   * @param key
+   *          The key.
+   */
+  public void setKey(Key key) {
+    key_ = key;
+  }
 
 }

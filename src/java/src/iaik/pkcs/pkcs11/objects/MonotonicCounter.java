@@ -47,262 +47,249 @@ import iaik.pkcs.pkcs11.TokenException;
 import iaik.pkcs.pkcs11.wrapper.Constants;
 
 /**
- * Objects of this class represent a monotonic counter as specified by PKCS#11
- * v2.11. Remind that this is a snapshot; this means that this object does not
- * get the values from the token on demand it gets them uppon instanciation.
- *
+ * Objects of this class represent a monotonic counter as specified by PKCS#11 v2.11. Remind that
+ * this is a snapshot; this means that this object does not get the values from the token on demand
+ * it gets them uppon instanciation.
+ * 
  * @author Karl Scheibelhofer
  * @version 1.0
- * @invariants (resetOnInit_ <> null)
- *             and (hasReset_ <> null)
- *             and (value_ <> null)
+ * @invariants (resetOnInit_ <> null) and (hasReset_ <> null) and (value_ <> null)
  */
 public class MonotonicCounter extends HardwareFeature {
 
-	/**
-	 * True, if this counter is reset on token initializatioin.
-	 */
-	protected BooleanAttribute resetOnInit_;
+  /**
+   * True, if this counter is reset on token initializatioin.
+   */
+  protected BooleanAttribute resetOnInit_;
 
-	/**
-	 * True, if this counter has benn reset at least once.
-	 */
-	protected BooleanAttribute hasReset_;
+  /**
+   * True, if this counter has benn reset at least once.
+   */
+  protected BooleanAttribute hasReset_;
 
-	/**
-	 * The value attribute of this monotonic counter.
-	 */
-	protected ByteArrayAttribute value_;
+  /**
+   * The value attribute of this monotonic counter.
+   */
+  protected ByteArrayAttribute value_;
 
-	/**
-	 * Deafult Constructor.
-	 *
-	 * @preconditions
-	 * @postconditions
-	 */
-	public MonotonicCounter() {
-		super();
-		hardwareFeatureType_.setLongValue(FeatureType.MONOTONIC_COUNTER);
-	}
+  /**
+   * Deafult Constructor.
+   * 
+   */
+  public MonotonicCounter() {
+    super();
+    hardwareFeatureType_.setLongValue(FeatureType.MONOTONIC_COUNTER);
+  }
 
-	/**
-	 * Called by getInstance to create an instance of a PKCS#11 monotonic counter.
-	 *
-	 * @param session The session to use for reading attributes.
-	 *                This session must have the appropriate rights; i.e.
-	 *                it must be a user-session, if it is a private object.
-	 * @param objectHandle The object handle as given from the PKCS#111 module.
-	 * @exception TokenException If getting the attributes failed.
-	 * @preconditions (session <> null)
-	 * @postconditions
-	 */
-	protected MonotonicCounter(Session session, long objectHandle)
-	    throws TokenException
-	{
-		super(session, objectHandle);
-		hardwareFeatureType_.setLongValue(FeatureType.MONOTONIC_COUNTER);
-	}
+  /**
+   * Called by getInstance to create an instance of a PKCS#11 monotonic counter.
+   * 
+   * @param session
+   *          The session to use for reading attributes. This session must have the appropriate
+   *          rights; i.e. it must be a user-session, if it is a private object.
+   * @param objectHandle
+   *          The object handle as given from the PKCS#111 module.
+   * @exception TokenException
+   *              If getting the attributes failed.
+   * @preconditions (session <> null)
+   * 
+   */
+  protected MonotonicCounter(Session session, long objectHandle) throws TokenException {
+    super(session, objectHandle);
+    hardwareFeatureType_.setLongValue(FeatureType.MONOTONIC_COUNTER);
+  }
 
-	/**
-	 * The getInstance method of the HardwareFeature class uses this method to
-	 * create an instance of a PKCS#11 monotonic counter.
-	 *
-	 * @param session The session to use for reading attributes.
-	 *                This session must have the appropriate rights; i.e.
-	 *                it must be a user-session, if it is a private object.
-	 * @param objectHandle The object handle as given from the PKCS#111 module.
-	 * @return The object representing the PKCS#11 object.
-	 *         The returned object can be casted to the
-	 *         according sub-class.
-	 * @exception TokenException If getting the attributes failed.
-	 * @preconditions (session <> null)
-	 * @postconditions (result <> null) 
-	 */
-	public static Object getInstance(Session session, long objectHandle)
-	    throws TokenException
-	{
-		return new MonotonicCounter(session, objectHandle);
-	}
+  /**
+   * The getInstance method of the HardwareFeature class uses this method to create an instance of a
+   * PKCS#11 monotonic counter.
+   * 
+   * @param session
+   *          The session to use for reading attributes. This session must have the appropriate
+   *          rights; i.e. it must be a user-session, if it is a private object.
+   * @param objectHandle
+   *          The object handle as given from the PKCS#111 module.
+   * @return The object representing the PKCS#11 object. The returned object can be casted to the
+   *         according sub-class.
+   * @exception TokenException
+   *              If getting the attributes failed.
+   * @preconditions (session <> null)
+   * @postconditions (result <> null)
+   */
+  public static Object getInstance(Session session, long objectHandle)
+      throws TokenException {
+    return new MonotonicCounter(session, objectHandle);
+  }
 
-	/**
-	 * Put all attributes of the given object into the attributes table of this
-	 * object. This method is only static to be able to access invoke the
-	 * implementation of this method for each class separately (see use in
-	 * clone()).
-	 *
-	 * @param object The object to handle.
-	 * @preconditions (object <> null)
-	 * @postconditions
-	 */
-	protected static void putAttributesInTable(MonotonicCounter object) {
-		if (object == null) {
-			throw new NullPointerException("Argument \"object\" must not be null.");
-		}
+  /**
+   * Put all attributes of the given object into the attributes table of this object. This method is
+   * only static to be able to access invoke the implementation of this method for each class
+   * separately (see use in clone()).
+   * 
+   * @param object
+   *          The object to handle.
+   * @preconditions (object <> null)
+   * 
+   */
+  protected static void putAttributesInTable(MonotonicCounter object) {
+    if (object == null) {
+      throw new NullPointerException("Argument \"object\" must not be null.");
+    }
 
-		object.attributeTable_.put(Attribute.RESET_ON_INIT, object.resetOnInit_);
-		object.attributeTable_.put(Attribute.HAS_RESET, object.hasReset_);
-		object.attributeTable_.put(Attribute.VALUE, object.value_);
-	}
+    object.attributeTable_.put(Attribute.RESET_ON_INIT, object.resetOnInit_);
+    object.attributeTable_.put(Attribute.HAS_RESET, object.hasReset_);
+    object.attributeTable_.put(Attribute.VALUE, object.value_);
+  }
 
-	/**
-	 * Allocates the attribute objects for this class and adds them to the
-	 * attribute table.
-	 *
-	 * @preconditions
-	 * @postconditions
-	 */
-	protected void allocateAttributes() {
-		super.allocateAttributes();
+  /**
+   * Allocates the attribute objects for this class and adds them to the attribute table.
+   * 
+   */
+  protected void allocateAttributes() {
+    super.allocateAttributes();
 
-		resetOnInit_ = new BooleanAttribute(Attribute.RESET_ON_INIT);
-		hasReset_ = new BooleanAttribute(Attribute.HAS_RESET);
-		value_ = new ByteArrayAttribute(Attribute.VALUE);
+    resetOnInit_ = new BooleanAttribute(Attribute.RESET_ON_INIT);
+    hasReset_ = new BooleanAttribute(Attribute.HAS_RESET);
+    value_ = new ByteArrayAttribute(Attribute.VALUE);
 
-		putAttributesInTable(this);
-	}
+    putAttributesInTable(this);
+  }
 
-	/**
-	 * Create a (deep) clone of this object.
-	 *
-	 * @return A clone of this object.
-	 * @preconditions
-	 * @postconditions (result <> null)
-	 *                 and (result instanceof MonotonicCounter)
-	 *                 and (result.equals(this))
-	 */
-	public java.lang.Object clone() {
-		MonotonicCounter clone = (MonotonicCounter) super.clone();
+  /**
+   * Create a (deep) clone of this object.
+   * 
+   * @return A clone of this object.
+   * 
+   * @postconditions (result <> null) and (result instanceof MonotonicCounter) and
+   *                 (result.equals(this))
+   */
+  public java.lang.Object clone() {
+    MonotonicCounter clone = (MonotonicCounter) super.clone();
 
-		clone.resetOnInit_ = (BooleanAttribute) this.resetOnInit_.clone();
-		clone.hasReset_ = (BooleanAttribute) this.hasReset_.clone();
-		clone.value_ = (ByteArrayAttribute) this.value_.clone();
+    clone.resetOnInit_ = (BooleanAttribute) this.resetOnInit_.clone();
+    clone.hasReset_ = (BooleanAttribute) this.hasReset_.clone();
+    clone.value_ = (ByteArrayAttribute) this.value_.clone();
 
-		putAttributesInTable(clone); // put all cloned attributes into the new table
+    putAttributesInTable(clone); // put all cloned attributes into the new table
 
-		return clone;
-	}
+    return clone;
+  }
 
-	/**
-	 * Compares all member variables of this object with the other object.
-	 * Returns only true, if all are equal in both objects.
-	 *
-	 * @param otherObject The other object to compare to.
-	 * @return True, if other is an instance of this class and all member
-	 *         variables of both objects are equal. False, otherwise.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public boolean equals(java.lang.Object otherObject) {
-		boolean equal = false;
+  /**
+   * Compares all member variables of this object with the other object. Returns only true, if all
+   * are equal in both objects.
+   * 
+   * @param otherObject
+   *          The other object to compare to.
+   * @return True, if other is an instance of this class and all member variables of both objects
+   *         are equal. False, otherwise.
+   */
+  public boolean equals(java.lang.Object otherObject) {
+    boolean equal = false;
 
-		if (otherObject instanceof MonotonicCounter) {
-			MonotonicCounter other = (MonotonicCounter) otherObject;
-			equal = (this == other)
-			    || (super.equals(other) && this.resetOnInit_.equals(other.resetOnInit_)
-			        && this.hasReset_.equals(other.hasReset_) && this.value_
-			          .equals(other.value_));
-		}
+    if (otherObject instanceof MonotonicCounter) {
+      MonotonicCounter other = (MonotonicCounter) otherObject;
+      equal = (this == other)
+          || (super.equals(other) && this.resetOnInit_.equals(other.resetOnInit_)
+              && this.hasReset_.equals(other.hasReset_) && this.value_
+                .equals(other.value_));
+    }
 
-		return equal;
-	}
+    return equal;
+  }
 
-	/**
-	 * Gets the has-reset attribute of this monotonic counter object.
-	 *
-	 * @return The has-reset attribute.
-	 * @preconditions
-	 * @postconditions (result <> null)
-	 */
-	public BooleanAttribute getHasReset() {
-		return hasReset_;
-	}
+  /**
+   * Gets the has-reset attribute of this monotonic counter object.
+   * 
+   * @return The has-reset attribute.
+   * 
+   * @postconditions (result <> null)
+   */
+  public BooleanAttribute getHasReset() {
+    return hasReset_;
+  }
 
-	/**
-	 * Gets the reseet-on-init attribute of this monotonic counter object.
-	 *
-	 * @return The reset-on-init attribute.
-	 * @preconditions
-	 * @postconditions (result <> null)
-	 */
-	public BooleanAttribute isResetOnInit() {
-		return resetOnInit_;
-	}
+  /**
+   * Gets the reseet-on-init attribute of this monotonic counter object.
+   * 
+   * @return The reset-on-init attribute.
+   * 
+   * @postconditions (result <> null)
+   */
+  public BooleanAttribute isResetOnInit() {
+    return resetOnInit_;
+  }
 
-	/**
-	 * Gets the value attribute of this monotonic counter object.
-	 *
-	 * @return The value attribute.
-	 * @preconditions
-	 * @postconditions (result <> null)
-	 */
-	public ByteArrayAttribute getValue() {
-		return value_;
-	}
+  /**
+   * Gets the value attribute of this monotonic counter object.
+   * 
+   * @return The value attribute.
+   * 
+   * @postconditions (result <> null)
+   */
+  public ByteArrayAttribute getValue() {
+    return value_;
+  }
 
-	/**
-	 * The overriding of this method should ensure that the objects of this class
-	 * work correctly in a hashtable.
-	 *
-	 * @return The hash code of this object.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public int hashCode() {
-		return resetOnInit_.hashCode() ^ hasReset_.hashCode() ^ value_.hashCode();
-	}
+  /**
+   * The overriding of this method should ensure that the objects of this class work correctly in a
+   * hashtable.
+   * 
+   * @return The hash code of this object.
+   */
+  public int hashCode() {
+    return resetOnInit_.hashCode() ^ hasReset_.hashCode() ^ value_.hashCode();
+  }
 
-	/**
-	 * Read the values of the attributes of this object from the token.
-	 *
-	 * @param session The session handle to use for reading attributes.
-	 *                This session must have the appropriate rights; i.e.
-	 *                it must be a user-session, if it is a private object.
-	 * @exception TokenException If getting the attributes failed.
-	 * @preconditions (session <> null)
-	 * @postconditions
-	 */
-	public void readAttributes(Session session)
-	    throws TokenException
-	{
-		super.readAttributes(session);
+  /**
+   * Read the values of the attributes of this object from the token.
+   * 
+   * @param session
+   *          The session handle to use for reading attributes. This session must have the
+   *          appropriate rights; i.e. it must be a user-session, if it is a private object.
+   * @exception TokenException
+   *              If getting the attributes failed.
+   * @preconditions (session <> null)
+   * 
+   */
+  public void readAttributes(Session session) throws TokenException {
+    super.readAttributes(session);
 
-		//    Object.getAttributeValue(session, objectHandle_, resetOnInit_);
-		//    Object.getAttributeValue(session, objectHandle_, hasReset_);
-		//    Object.getAttributeValue(session, objectHandle_, value_);
-		Object.getAttributeValues(session, objectHandle_, new Attribute[] { resetOnInit_,
-		    hasReset_, value_ });
-	}
+    // Object.getAttributeValue(session, objectHandle_, resetOnInit_);
+    // Object.getAttributeValue(session, objectHandle_, hasReset_);
+    // Object.getAttributeValue(session, objectHandle_, value_);
+    Object.getAttributeValues(session, objectHandle_, new Attribute[] { resetOnInit_,
+        hasReset_, value_ });
+  }
 
-	/**
-	 * This method returns a string representation of the current object. The
-	 * output is only for debugging purposes and should not be used for other
-	 * purposes.
-	 *
-	 * @return A string presentation of this object for debugging output.
-	 * @preconditions
-	 * @postconditions (result <> null)
-	 */
-	public String toString() {
-		StringBuffer buffer = new StringBuffer(256);
+  /**
+   * This method returns a string representation of the current object. The output is only for
+   * debugging purposes and should not be used for other purposes.
+   * 
+   * @return A string presentation of this object for debugging output.
+   * 
+   * @postconditions (result <> null)
+   */
+  public String toString() {
+    StringBuffer buffer = new StringBuffer(256);
 
-		buffer.append(super.toString());
+    buffer.append(super.toString());
 
-		buffer.append(Constants.NEWLINE);
-		buffer.append(Constants.INDENT);
-		buffer.append("Reset on Initialization: ");
-		buffer.append(resetOnInit_.toString());
+    buffer.append(Constants.NEWLINE);
+    buffer.append(Constants.INDENT);
+    buffer.append("Reset on Initialization: ");
+    buffer.append(resetOnInit_.toString());
 
-		buffer.append(Constants.NEWLINE);
-		buffer.append(Constants.INDENT);
-		buffer.append("Has been reset: ");
-		buffer.append(hasReset_.toString());
+    buffer.append(Constants.NEWLINE);
+    buffer.append(Constants.INDENT);
+    buffer.append("Has been reset: ");
+    buffer.append(hasReset_.toString());
 
-		buffer.append(Constants.NEWLINE);
-		buffer.append(Constants.INDENT);
-		buffer.append("Value (hex): ");
-		buffer.append(value_.toString());
+    buffer.append(Constants.NEWLINE);
+    buffer.append(Constants.INDENT);
+    buffer.append("Value (hex): ");
+    buffer.append(value_.toString());
 
-		return buffer.toString();
-	}
+    return buffer.toString();
+  }
 
 }

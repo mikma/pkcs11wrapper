@@ -64,93 +64,97 @@ import java.util.List;
  */
 public class GenerateKey {
 
-	static PrintWriter output_;
+  static PrintWriter output_;
 
-	static BufferedReader input_;
+  static BufferedReader input_;
 
-	static {
-		try {
-			//output_ = new PrintWriter(new FileWriter("GetInfo_output.txt"), true);
-			output_ = new PrintWriter(System.out, true);
-			input_ = new BufferedReader(new InputStreamReader(System.in));
-		} catch (Throwable thr) {
-			thr.printStackTrace();
-			output_ = new PrintWriter(System.out, true);
-			input_ = new BufferedReader(new InputStreamReader(System.in));
-		}
-	}
+  static {
+    try {
+      // output_ = new PrintWriter(new FileWriter("GetInfo_output.txt"), true);
+      output_ = new PrintWriter(System.out, true);
+      input_ = new BufferedReader(new InputStreamReader(System.in));
+    } catch (Throwable thr) {
+      thr.printStackTrace();
+      output_ = new PrintWriter(System.out, true);
+      input_ = new BufferedReader(new InputStreamReader(System.in));
+    }
+  }
 
-	public static void main(String[] args)
-	    throws IOException, TokenException
-	{
-		if ((args.length < 1)) {
-			printUsage();
-			throw new IOException("Missing argument!");
-		}
+  /**
+   * GenerateKey PKCS#11-module [slot-index] [user-PIN]
+   */
+  public static void main(String[] args) throws IOException, TokenException {
+    if ((args.length < 1)) {
+      printUsage();
+      throw new IOException("Missing argument!");
+    }
 
-		Module pkcs11Module = Module.getInstance(args[0]);
-		pkcs11Module.initialize(null);
+    Module pkcs11Module = Module.getInstance(args[0]);
+    pkcs11Module.initialize(null);
 
-		Slot[] slots = pkcs11Module.getSlotList(Module.SlotRequirement.TOKEN_PRESENT);
+    Slot[] slots = pkcs11Module.getSlotList(Module.SlotRequirement.TOKEN_PRESENT);
 
-		if (slots.length == 0) {
-			output_.println("No slot with present token found!");
-			throw new TokenException("No token found!");
-		}
+    if (slots.length == 0) {
+      output_.println("No slot with present token found!");
+      throw new TokenException("No token found!");
+    }
 
-		Slot selectedSlot;
-		if (1 < args.length) selectedSlot = slots[Integer.parseInt(args[1])];
-		else selectedSlot = slots[0];
+    Slot selectedSlot;
+    if (1 < args.length)
+      selectedSlot = slots[Integer.parseInt(args[1])];
+    else
+      selectedSlot = slots[0];
 
-		Token token = selectedSlot.getToken();
-		TokenInfo tokenInfo = token.getTokenInfo();
+    Token token = selectedSlot.getToken();
+    TokenInfo tokenInfo = token.getTokenInfo();
 
-		output_
-		    .println("################################################################################");
-		output_.println("Information of Token:");
-		output_.println(tokenInfo);
-		output_
-		    .println("################################################################################");
+    output_
+        .println("################################################################################");
+    output_.println("Information of Token:");
+    output_.println(tokenInfo);
+    output_
+        .println("################################################################################");
 
-		List supportedMechanisms = Arrays.asList(token.getMechanismList());
+    List supportedMechanisms = Arrays.asList(token.getMechanismList());
 
-		Session session = token.openSession(Token.SessionType.SERIAL_SESSION,
-		    Token.SessionReadWriteBehavior.RW_SESSION, null, null);
+    Session session = token.openSession(Token.SessionType.SERIAL_SESSION,
+        Token.SessionReadWriteBehavior.RW_SESSION, null, null);
 
-		// if we have to user PIN login user
-		if (2 < args.length) {
-			session.login(Session.UserType.USER, args[2].toCharArray());
-		}
+    // if we have to user PIN login user
+    if (2 < args.length) {
+      session.login(Session.UserType.USER, args[2].toCharArray());
+    }
 
-		if (supportedMechanisms.contains(Mechanism
-		    .get(PKCS11Constants.CKM_GENERIC_SECRET_KEY_GEN))) {
-			output_
-			    .println("################################################################################");
-			output_.println("Generating generic secret key");
+    if (supportedMechanisms.contains(Mechanism
+        .get(PKCS11Constants.CKM_GENERIC_SECRET_KEY_GEN))) {
+      output_
+          .println("################################################################################");
+      output_.println("Generating generic secret key");
 
-			Mechanism keyGenerationMechanism = Mechanism
-			    .get(PKCS11Constants.CKM_GENERIC_SECRET_KEY_GEN);
+      Mechanism keyGenerationMechanism = Mechanism
+          .get(PKCS11Constants.CKM_GENERIC_SECRET_KEY_GEN);
 
-			GenericSecretKey secretKeyTemplate = new GenericSecretKey();
-			secretKeyTemplate.getValueLen().setLongValue(new Long(16));
+      GenericSecretKey secretKeyTemplate = new GenericSecretKey();
+      secretKeyTemplate.getValueLen().setLongValue(new Long(16));
 
-			GenericSecretKey secretKey = (GenericSecretKey) session.generateKey(
-			    keyGenerationMechanism, secretKeyTemplate);
+      GenericSecretKey secretKey = (GenericSecretKey) session.generateKey(
+          keyGenerationMechanism, secretKeyTemplate);
 
-			output_.println("the secret key is");
-			output_.println(secretKey.toString());
+      output_.println("the secret key is");
+      output_.println(secretKey.toString());
 
-			output_
-			    .println("################################################################################");
-		} else output_.println("Mechanism not supported: GENERIC_SECRET_KEY_GEN");
-		session.closeSession();
-		pkcs11Module.finalize(null);
-	}
+      output_
+          .println("################################################################################");
+    } else
+      output_.println("Mechanism not supported: GENERIC_SECRET_KEY_GEN");
+    session.closeSession();
+    pkcs11Module.finalize(null);
+  }
 
-	public static void printUsage() {
-		output_.println("Usage: GenerateKey <PKCS#11 module> [<slot>] [<user-PIN>]");
-		output_.println(" e.g.: GenerateKey cryptoki.dll");
-		output_.println("The given DLL must be in the search path of the system.");
-	}
+  public static void printUsage() {
+    output_.println("Usage: GenerateKey <PKCS#11 module> [<slot-index>] [<user-PIN>]");
+    output_.println(" e.g.: GenerateKey cryptoki.dll");
+    output_.println("The given DLL must be in the search path of the system.");
+  }
 
 }

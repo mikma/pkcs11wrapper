@@ -47,7 +47,7 @@
  *
  * declaration of all platform dependent functions used by pkcs11wrapper.c
  *
- * @author Karl Scheibelhofer <Karl.Scheibelhofer@iaik.at>
+ * @author Karl Scheibelhofer
  */
 
 /* defines for WIN32 platform *************************************************/

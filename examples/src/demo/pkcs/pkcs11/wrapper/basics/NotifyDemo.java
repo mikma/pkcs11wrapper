@@ -57,57 +57,61 @@ import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
  */
 public class NotifyDemo implements Notify {
 
-	public static void main(String[] args)
-	    throws IOException, TokenException
-	{
-		if (args.length != 1) {
-			printUsage();
-			throw new IOException("Missing argument!");
-		}
+  /**
+   * Usage: NotifyDemo PKCS#11-module [slot-index]
+   */
+  public static void main(String[] args) throws IOException, TokenException {
+    if (args.length < 1) {
+      printUsage();
+      throw new IOException("Missing argument!");
+    }
 
-		Module pkcs11Module = Module.getInstance(args[0]);
-		pkcs11Module.initialize(null);
+    Module pkcs11Module = Module.getInstance(args[0]);
+    pkcs11Module.initialize(null);
 
-		Slot[] slots = pkcs11Module.getSlotList(Module.SlotRequirement.TOKEN_PRESENT);
+    Slot[] slots = pkcs11Module.getSlotList(Module.SlotRequirement.TOKEN_PRESENT);
 
-		if (slots.length == 0) {
-			System.out.println("No slot with present token found!");
-			throw new TokenException("No token found!");
-		}
+    if (slots.length == 0) {
+      System.out.println("No slot with present token found!");
+      throw new TokenException("No token found!");
+    }
 
-		Slot selectedSlot = slots[0];
-		Token token = selectedSlot.getToken();
+    Slot selectedSlot;
+    if (1 < args.length)
+      selectedSlot = slots[Integer.parseInt(args[1])];
+    else
+      selectedSlot = slots[0];
+    Token token = selectedSlot.getToken();
 
-		System.out
-		    .println("################################################################################");
-		System.out.print("trying to set Notify callback handler... ");
+    System.out
+        .println("################################################################################");
+    System.out.print("trying to set Notify callback handler... ");
 
-		NotifyDemo callback = new NotifyDemo();
-		String applicationData = "Hello Application!";
-		Session session = token.openSession(Token.SessionType.SERIAL_SESSION,
-		    Token.SessionReadWriteBehavior.RO_SESSION, applicationData, callback);
+    NotifyDemo callback = new NotifyDemo();
+    String applicationData = "Hello Application!";
+    Session session = token.openSession(Token.SessionType.SERIAL_SESSION,
+        Token.SessionReadWriteBehavior.RO_SESSION, applicationData, callback);
 
-		System.out.println("finished");
-		System.out
-		    .println("################################################################################");
+    System.out.println("finished");
+    System.out
+        .println("################################################################################");
 
-		// FIXME, insert any code that causes a callback
+    // FIXME, insert any code that causes a callback
 
-		session.closeSession();
-		pkcs11Module.finalize(null);
-	}
+    session.closeSession();
+    pkcs11Module.finalize(null);
+  }
 
-	public static void printUsage() {
-		System.out.println("Usage: NotifyDemo <PKCS#11 module>");
-		System.out.println(" e.g.: NotifyDemo pk2priv.dll");
-		System.out.println("The given DLL must be in the search path of the system.");
-	}
+  public static void printUsage() {
+    System.out.println("Usage: NotifyDemo <PKCS#11 module> [<slot-index>]");
+    System.out.println(" e.g.: NotifyDemo pk2priv.dll 0");
+    System.out.println("The given DLL must be in the search path of the system.");
+  }
 
-	public void notify(Session session, boolean surrender, Object application)
-	    throws PKCS11Exception
-	{
-		System.out.println("we got a Notify callback !!!");
-		// we do not throw an exception, this means return value CKR_OK
-	}
+  public void notify(Session session, boolean surrender, Object application)
+      throws PKCS11Exception {
+    System.out.println("we got a Notify callback !!!");
+    // we do not throw an exception, this means return value CKR_OK
+  }
 
 }

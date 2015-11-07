@@ -48,8 +48,8 @@
  * This is the implementation of the native functions of the Java to PKCS#11 interface.
  * All function use some helper functions to convert the JNI types to PKCS#11 types.
  *
- * @author Karl Scheibelhofer <Karl.Scheibelhofer@iaik.at>
- * @author Martin Schlaeffer <schlaeff@sbox.tugraz.at>
+ * @author Karl Scheibelhofer
+ * @author Martin Schlaeffer
  */
 
 #include "pkcs11wrapper.h"

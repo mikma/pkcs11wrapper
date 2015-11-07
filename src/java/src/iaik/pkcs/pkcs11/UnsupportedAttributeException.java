@@ -44,8 +44,8 @@ package iaik.pkcs.pkcs11;
 
 public class UnsupportedAttributeException extends Exception {
 
-	public UnsupportedAttributeException(String message) {
-		super(message);
-	}
+  public UnsupportedAttributeException(String message) {
+    super(message);
+  }
 
 }

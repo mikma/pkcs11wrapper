@@ -40,7 +40,6 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-
 package demo.pkcs.pkcs11.wrapper.util;
 
 import iaik.asn1.ObjectID;
@@ -92,9 +91,9 @@ import demo.pkcs.pkcs11.wrapper.adapters.TokenPrivateKey;
 import demo.pkcs.pkcs11.wrapper.signatures.PKCS11SignatureEngine;
 
 /**
- *  Generates a private key on the token and uses this key to sign a certificate.
- *  The certificate is then stored on the token as well.
- *
+ * Generates a private key on the token and uses this key to sign a certificate. The certificate is
+ * then stored on the token as well.
+ * 
  */
 public class CreateKeysAndCertificate {
   static BufferedReader input_;
@@ -112,14 +111,12 @@ public class CreateKeysAndCertificate {
     }
   }
 
-  public static void main(String[] args)
-    throws IOException,
-    TokenException,
-    NoSuchAlgorithmException,
-    CertificateException,
-    X509ExtensionException,
-    RFC2253NameParserException,
-    InvalidKeyException {
+  /**
+   * Usage: CreateKeysAndCertificate PKCS#11-module RFC2253-subject-name [slot-index] [pin]
+   */
+  public static void main(String[] args) throws IOException, TokenException,
+      NoSuchAlgorithmException, CertificateException, X509ExtensionException,
+      RFC2253NameParserException, InvalidKeyException {
     if (args.length < 2) {
       printUsage();
       throw new IOException("Missing argument!");
@@ -144,22 +141,22 @@ public class CreateKeysAndCertificate {
     TokenInfo tokenInfo = token.getTokenInfo();
 
     output_
-      .println("################################################################################");
+        .println("################################################################################");
     output_.println("Information of Token:");
     output_.println(tokenInfo);
     output_
-      .println("################################################################################");
+        .println("################################################################################");
 
     Session session;
     if (3 < args.length)
-      session = Util.openAuthorizedSession(token, Token.SessionReadWriteBehavior.RW_SESSION,
-        output_, input_, args[3]);
+      session = Util.openAuthorizedSession(token,
+          Token.SessionReadWriteBehavior.RW_SESSION, output_, input_, args[3]);
     else
-      session = Util.openAuthorizedSession(token, Token.SessionReadWriteBehavior.RW_SESSION,
-        output_, input_, null);
+      session = Util.openAuthorizedSession(token,
+          Token.SessionReadWriteBehavior.RW_SESSION, output_, input_, null);
 
     output_
-      .println("################################################################################");
+        .println("################################################################################");
     output_.print("Generating new 2048 bit RSA key-pair... ");
     output_.flush();
 
@@ -168,27 +165,30 @@ public class CreateKeysAndCertificate {
 
     MechanismInfo signatureMechanismInfo;
     if (supportedMechanisms.contains(Mechanism.get(PKCS11Constants.CKM_RSA_PKCS))) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(PKCS11Constants.CKM_RSA_PKCS));
-    } else if (supportedMechanisms.contains(Mechanism.get(PKCS11Constants.CKM_RSA_X_509))) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(PKCS11Constants.CKM_RSA_X_509));
-    } else if (supportedMechanisms.contains(Mechanism.get(PKCS11Constants.CKM_RSA_9796))) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(PKCS11Constants.CKM_RSA_9796));
-    } else if (supportedMechanisms.contains(Mechanism.get(PKCS11Constants.CKM_RSA_PKCS_OAEP))) {
       signatureMechanismInfo = token.getMechanismInfo(Mechanism
-        .get(PKCS11Constants.CKM_RSA_PKCS_OAEP));
+          .get(PKCS11Constants.CKM_RSA_PKCS));
+    } else if (supportedMechanisms.contains(Mechanism.get(PKCS11Constants.CKM_RSA_X_509))) {
+      signatureMechanismInfo = token.getMechanismInfo(Mechanism
+          .get(PKCS11Constants.CKM_RSA_X_509));
+    } else if (supportedMechanisms.contains(Mechanism.get(PKCS11Constants.CKM_RSA_9796))) {
+      signatureMechanismInfo = token.getMechanismInfo(Mechanism
+          .get(PKCS11Constants.CKM_RSA_9796));
+    } else if (supportedMechanisms.contains(Mechanism
+        .get(PKCS11Constants.CKM_RSA_PKCS_OAEP))) {
+      signatureMechanismInfo = token.getMechanismInfo(Mechanism
+          .get(PKCS11Constants.CKM_RSA_PKCS_OAEP));
     } else {
       signatureMechanismInfo = null;
     }
 
-    Mechanism keyPairGenerationMechanism = Mechanism.get(PKCS11Constants.CKM_RSA_PKCS_KEY_PAIR_GEN);
+    Mechanism keyPairGenerationMechanism = Mechanism
+        .get(PKCS11Constants.CKM_RSA_PKCS_KEY_PAIR_GEN);
     RSAPublicKey rsaPublicKeyTemplate = new RSAPublicKey();
     RSAPrivateKey rsaPrivateKeyTemplate = new RSAPrivateKey();
 
     // set the general attributes for the public key
     rsaPublicKeyTemplate.getModulusBits().setLongValue(new Long(2048));
-    byte[] publicExponentBytes = {
-      0x01, 0x00, 0x01
-    }; // 2^16 + 1
+    byte[] publicExponentBytes = { 0x01, 0x00, 0x01 }; // 2^16 + 1
     rsaPublicKeyTemplate.getPublicExponent().setByteArrayValue(publicExponentBytes);
     rsaPublicKeyTemplate.getToken().setBooleanValue(Boolean.TRUE);
     byte[] id = new byte[20];
@@ -208,24 +208,26 @@ public class CreateKeysAndCertificate {
     // tokens
     if (signatureMechanismInfo != null) {
       rsaPublicKeyTemplate.getVerify().setBooleanValue(
-        new Boolean(signatureMechanismInfo.isVerify()));
+          new Boolean(signatureMechanismInfo.isVerify()));
       rsaPublicKeyTemplate.getVerifyRecover().setBooleanValue(
-        new Boolean(signatureMechanismInfo.isVerifyRecover()));
+          new Boolean(signatureMechanismInfo.isVerifyRecover()));
       rsaPublicKeyTemplate.getEncrypt().setBooleanValue(
-        new Boolean(signatureMechanismInfo.isEncrypt()));
+          new Boolean(signatureMechanismInfo.isEncrypt()));
       rsaPublicKeyTemplate.getDerive().setBooleanValue(
-        new Boolean(signatureMechanismInfo.isDerive()));
-      rsaPublicKeyTemplate.getWrap().setBooleanValue(new Boolean(signatureMechanismInfo.isWrap()));
+          new Boolean(signatureMechanismInfo.isDerive()));
+      rsaPublicKeyTemplate.getWrap().setBooleanValue(
+          new Boolean(signatureMechanismInfo.isWrap()));
 
-      rsaPrivateKeyTemplate.getSign().setBooleanValue(new Boolean(signatureMechanismInfo.isSign()));
+      rsaPrivateKeyTemplate.getSign().setBooleanValue(
+          new Boolean(signatureMechanismInfo.isSign()));
       rsaPrivateKeyTemplate.getSignRecover().setBooleanValue(
-        new Boolean(signatureMechanismInfo.isSignRecover()));
+          new Boolean(signatureMechanismInfo.isSignRecover()));
       rsaPrivateKeyTemplate.getDecrypt().setBooleanValue(
-        new Boolean(signatureMechanismInfo.isDecrypt()));
+          new Boolean(signatureMechanismInfo.isDecrypt()));
       rsaPrivateKeyTemplate.getDerive().setBooleanValue(
-        new Boolean(signatureMechanismInfo.isDerive()));
+          new Boolean(signatureMechanismInfo.isDerive()));
       rsaPrivateKeyTemplate.getUnwrap().setBooleanValue(
-        new Boolean(signatureMechanismInfo.isUnwrap()));
+          new Boolean(signatureMechanismInfo.isUnwrap()));
     } else {
       // if we have no information we assume these attributes
       rsaPrivateKeyTemplate.getSign().setBooleanValue(Boolean.TRUE);
@@ -243,36 +245,37 @@ public class CreateKeysAndCertificate {
     rsaPrivateKeyTemplate.getObjectClass().setPresent(false);
 
     KeyPair generatedKeyPair = session.generateKeyPair(keyPairGenerationMechanism,
-      rsaPublicKeyTemplate, rsaPrivateKeyTemplate);
+        rsaPublicKeyTemplate, rsaPrivateKeyTemplate);
     RSAPublicKey generatedRSAPublicKey = (RSAPublicKey) generatedKeyPair.getPublicKey();
-    RSAPrivateKey generatedRSAPrivateKey = (RSAPrivateKey) generatedKeyPair.getPrivateKey();
+    RSAPrivateKey generatedRSAPrivateKey = (RSAPrivateKey) generatedKeyPair
+        .getPrivateKey();
     // no we may work with the keys...
 
     output_.println("Success");
     output_.println("The public key is");
     output_
-      .println("_______________________________________________________________________________");
+        .println("_______________________________________________________________________________");
     output_.println(generatedRSAPublicKey);
     output_
-      .println("_______________________________________________________________________________");
+        .println("_______________________________________________________________________________");
     output_.println("The private key is");
     output_
-      .println("_______________________________________________________________________________");
+        .println("_______________________________________________________________________________");
     output_.println(generatedRSAPrivateKey);
     output_
-      .println("_______________________________________________________________________________");
+        .println("_______________________________________________________________________________");
 
     output_
-      .println("################################################################################");
+        .println("################################################################################");
 
     output_
-      .println("################################################################################");
+        .println("################################################################################");
     output_.println("self-signing demo certificate");
 
     Signature tokenSignatureEngine = new PKCS11SignatureEngine("SHA1withRSA", session,
-      Mechanism.get(PKCS11Constants.CKM_RSA_PKCS), AlgorithmID.sha1);
+        Mechanism.get(PKCS11Constants.CKM_RSA_PKCS), AlgorithmID.sha1);
     AlgorithmIDAdapter pkcs11Sha1RSASignatureAlgorithmID = new AlgorithmIDAdapter(
-      AlgorithmID.sha1WithRSAEncryption);
+        AlgorithmID.sha1WithRSAEncryption);
     pkcs11Sha1RSASignatureAlgorithmID.setSignatureInstance(tokenSignatureEngine);
 
     RFC2253NameParser subjectNameParser = new RFC2253NameParser(args[1]);
@@ -288,9 +291,10 @@ public class CreateKeysAndCertificate {
     // set pulbic key
     // get the public key components from the private
     byte[] modulusBytes = generatedRSAPublicKey.getModulus().getByteArrayValue();
-    byte[] publicExponentBytes1 = generatedRSAPublicKey.getPublicExponent().getByteArrayValue();
-    iaik.security.rsa.RSAPublicKey publicKey = new iaik.security.rsa.RSAPublicKey(new BigInteger(1,
-      modulusBytes), new BigInteger(1, publicExponentBytes1));
+    byte[] publicExponentBytes1 = generatedRSAPublicKey.getPublicExponent()
+        .getByteArrayValue();
+    iaik.security.rsa.RSAPublicKey publicKey = new iaik.security.rsa.RSAPublicKey(
+        new BigInteger(1, modulusBytes), new BigInteger(1, publicExponentBytes1));
     certificate.setPublicKey(publicKey);
 
     // set serial number
@@ -307,29 +311,28 @@ public class CreateKeysAndCertificate {
     certificate.addExtension(basicConstraints);
 
     V3Extension keyUsage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign
-      | KeyUsage.digitalSignature);
+        | KeyUsage.digitalSignature);
     certificate.addExtension(keyUsage);
 
     PolicyQualifierInfo policyQualifierInfo = new PolicyQualifierInfo(null, null,
-      "This certificate may be used for demonstration purposes only.");
+        "This certificate may be used for demonstration purposes only.");
     PolicyInformation policyInformation = new PolicyInformation(new ObjectID(
-      "1.3.6.1.4.1.2706.2.2.1.1.1.1.1"), new PolicyQualifierInfo[]{
-      policyQualifierInfo
-    });
-    CertificatePolicies certificatePolicies = new CertificatePolicies(new PolicyInformation[]{
-      policyInformation
-    });
+        "1.3.6.1.4.1.2706.2.2.1.1.1.1.1"),
+        new PolicyQualifierInfo[] { policyQualifierInfo });
+    CertificatePolicies certificatePolicies = new CertificatePolicies(
+        new PolicyInformation[] { policyInformation });
     V3Extension policies = certificatePolicies;
     certificate.addExtension(policies);
 
-    java.security.PrivateKey tokenSignatureKey = new TokenPrivateKey(generatedRSAPrivateKey);
+    java.security.PrivateKey tokenSignatureKey = new TokenPrivateKey(
+        generatedRSAPrivateKey);
 
     output_.print("signing certificate... ");
     certificate.sign(pkcs11Sha1RSASignatureAlgorithmID, tokenSignatureKey);
     output_.println("finished");
 
     output_
-      .println("################################################################################");
+        .println("################################################################################");
     output_.println("Create certificate object(s) on token.");
 
     iaik.x509.X509Certificate currentCertificate = certificate; // start
@@ -342,7 +345,8 @@ public class CreateKeysAndCertificate {
     String subjectCommonName = subjectName1.getRDN(ObjectID.commonName);
     String issuerCommonName = issuerName.getRDN(ObjectID.commonName);
     char[] label = (subjectCommonName + "'s "
-      + ((issuerCommonName != null) ? issuerCommonName + " " : "") + "Certificate").toCharArray();
+        + ((issuerCommonName != null) ? issuerCommonName + " " : "") + "Certificate")
+        .toCharArray();
 
     byte[] encodedSubject = ((Name) currentCertificate.getSubjectDN()).getEncoded();
     byte[] encodedIssuer = ((Name) currentCertificate.getIssuerDN()).getEncoded();
@@ -355,21 +359,23 @@ public class CreateKeysAndCertificate {
     pkcs11X509PublicKeyCertificate.getSubject().setByteArrayValue(encodedSubject);
     pkcs11X509PublicKeyCertificate.getIssuer().setByteArrayValue(encodedIssuer);
     pkcs11X509PublicKeyCertificate.getSerialNumber().setByteArrayValue(serialNumber);
-    pkcs11X509PublicKeyCertificate.getValue().setByteArrayValue(currentCertificate.getEncoded());
+    pkcs11X509PublicKeyCertificate.getValue().setByteArrayValue(
+        currentCertificate.getEncoded());
 
     output_.println(pkcs11X509PublicKeyCertificate);
     output_
-      .println("________________________________________________________________________________");
+        .println("________________________________________________________________________________");
     session.createObject(pkcs11X509PublicKeyCertificate);
-    
+
     output_
-      .println("################################################################################");
+        .println("################################################################################");
 
     // now we try to search for the generated keys
     output_
-      .println("################################################################################");
-    output_.println("Trying to search for the public key of the generated key-pair by ID: "
-      + Functions.toHexString(id));
+        .println("################################################################################");
+    output_
+        .println("Trying to search for the public key of the generated key-pair by ID: "
+            + Functions.toHexString(id));
     // set the search template for the public key
     RSAPublicKey exportRsaPublicKeyTemplate = new RSAPublicKey();
     exportRsaPublicKeyTemplate.getId().setByteArrayValue(id);
@@ -383,14 +389,14 @@ public class CreateKeysAndCertificate {
     } else {
       output_.println("Found public key!");
       output_
-        .println("_______________________________________________________________________________");
+          .println("_______________________________________________________________________________");
       output_.println(foundPublicKeys[0]);
       output_
-        .println("_______________________________________________________________________________");
+          .println("_______________________________________________________________________________");
     }
 
     output_
-      .println("################################################################################");
+        .println("################################################################################");
 
     session.closeSession();
     pkcs11Module.finalize(null);
@@ -398,8 +404,9 @@ public class CreateKeysAndCertificate {
 
   public static void printUsage() {
     output_
-      .println("Usage: CreateKeysAndCertificate <PKCS#11 module> <RFC2253 subject name> [<slot>] [<pin>]");
-    output_.println(" e.g.: CreateKeysAndCertificate pk2priv.dll  \"CN=myname,O=IAIK,C=AT,EMAIL=myname@iaik.at\" ");
+        .println("Usage: CreateKeysAndCertificate <PKCS#11 module> <RFC2253 subject name> [<slot-index>] [<pin>]");
+    output_
+        .println(" e.g.: CreateKeysAndCertificate pk2priv.dll  \"CN=myname,O=IAIK,C=AT,EMAIL=myname@iaik.at\" ");
     output_.println("The given DLL must be in the search path of the system.");
   }
 }

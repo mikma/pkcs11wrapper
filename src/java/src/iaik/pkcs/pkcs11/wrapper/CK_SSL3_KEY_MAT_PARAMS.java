@@ -43,9 +43,11 @@
 package iaik.pkcs.pkcs11.wrapper;
 
 /**
- * class CK_SSL3_KEY_MAT_PARAMS provides the parameters to the
- * CKM_SSL3_KEY_AND_MAC_DERIVE mechanism.<p>
+ * class CK_SSL3_KEY_MAT_PARAMS provides the parameters to the CKM_SSL3_KEY_AND_MAC_DERIVE
+ * mechanism.
+ * <p>
  * <B>PKCS#11 structure:</B>
+ * 
  * <PRE>
  * typedef struct CK_SSL3_KEY_MAT_PARAMS {
  *   CK_ULONG ulMacSizeInBits;
@@ -56,99 +58,105 @@ package iaik.pkcs.pkcs11.wrapper;
  *   CK_SSL3_KEY_MAT_OUT_PTR pReturnedKeyMaterial;
  * } CK_SSL3_KEY_MAT_PARAMS;
  * </PRE>
- *
- * @author Karl Scheibelhofer <Karl.Scheibelhofer@iaik.at>
- * @author Martin Schläffer <schlaeff@sbox.tugraz.at>
+ * 
+ * @author Karl Scheibelhofer
+ * @author Martin Schläffer
  */
 public class CK_SSL3_KEY_MAT_PARAMS {
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_ULONG ulMacSizeInBits;
-	 * </PRE>
-	 */
-	public long ulMacSizeInBits;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_ULONG ulMacSizeInBits;
+   * </PRE>
+   */
+  public long ulMacSizeInBits;
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_ULONG ulKeySizeInBits;
-	 * </PRE>
-	 */
-	public long ulKeySizeInBits;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_ULONG ulKeySizeInBits;
+   * </PRE>
+   */
+  public long ulKeySizeInBits;
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_ULONG ulIVSizeInBits;
-	 * </PRE>
-	 */
-	public long ulIVSizeInBits;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_ULONG ulIVSizeInBits;
+   * </PRE>
+   */
+  public long ulIVSizeInBits;
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_BBOOL bIsExport;
-	 * </PRE>
-	 */
-	public boolean bIsExport;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_BBOOL bIsExport;
+   * </PRE>
+   */
+  public boolean bIsExport;
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_SSL3_RANDOM_DATA RandomInfo;
-	 * </PRE>
-	 */
-	public CK_SSL3_RANDOM_DATA RandomInfo;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_SSL3_RANDOM_DATA RandomInfo;
+   * </PRE>
+   */
+  public CK_SSL3_RANDOM_DATA RandomInfo;
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_SSL3_KEY_MAT_OUT_PTR pReturnedKeyMaterial;
-	 * </PRE>
-	 */
-	public CK_SSL3_KEY_MAT_OUT pReturnedKeyMaterial;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_SSL3_KEY_MAT_OUT_PTR pReturnedKeyMaterial;
+   * </PRE>
+   */
+  public CK_SSL3_KEY_MAT_OUT pReturnedKeyMaterial;
 
-	/**
-	 * Returns the string representation of CK_SSL3_KEY_MAT_PARAMS.
-	 *
-	 * @return the string representation of CK_SSL3_KEY_MAT_PARAMS
-	 */
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+  /**
+   * Returns the string representation of CK_SSL3_KEY_MAT_PARAMS.
+   * 
+   * @return the string representation of CK_SSL3_KEY_MAT_PARAMS
+   */
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
 
-		buffer.append(Constants.INDENT);
-		buffer.append("ulMacSizeInBits: ");
-		buffer.append(ulMacSizeInBits);
-		buffer.append(Constants.NEWLINE);
+    buffer.append(Constants.INDENT);
+    buffer.append("ulMacSizeInBits: ");
+    buffer.append(ulMacSizeInBits);
+    buffer.append(Constants.NEWLINE);
 
-		buffer.append(Constants.INDENT);
-		buffer.append("ulKeySizeInBits: ");
-		buffer.append(ulKeySizeInBits);
-		buffer.append(Constants.NEWLINE);
+    buffer.append(Constants.INDENT);
+    buffer.append("ulKeySizeInBits: ");
+    buffer.append(ulKeySizeInBits);
+    buffer.append(Constants.NEWLINE);
 
-		buffer.append(Constants.INDENT);
-		buffer.append("ulIVSizeInBits: ");
-		buffer.append(ulIVSizeInBits);
-		buffer.append(Constants.NEWLINE);
+    buffer.append(Constants.INDENT);
+    buffer.append("ulIVSizeInBits: ");
+    buffer.append(ulIVSizeInBits);
+    buffer.append(Constants.NEWLINE);
 
-		buffer.append(Constants.INDENT);
-		buffer.append("bIsExport: ");
-		buffer.append(bIsExport);
-		buffer.append(Constants.NEWLINE);
+    buffer.append(Constants.INDENT);
+    buffer.append("bIsExport: ");
+    buffer.append(bIsExport);
+    buffer.append(Constants.NEWLINE);
 
-		buffer.append(Constants.INDENT);
-		buffer.append("RandomInfo: ");
-		buffer.append(RandomInfo);
-		buffer.append(Constants.NEWLINE);
+    buffer.append(Constants.INDENT);
+    buffer.append("RandomInfo: ");
+    buffer.append(RandomInfo);
+    buffer.append(Constants.NEWLINE);
 
-		buffer.append(Constants.INDENT);
-		buffer.append("pReturnedKeyMaterial: ");
-		buffer.append(pReturnedKeyMaterial);
-		//buffer.append(Constants.NEWLINE);
+    buffer.append(Constants.INDENT);
+    buffer.append("pReturnedKeyMaterial: ");
+    buffer.append(pReturnedKeyMaterial);
+    // buffer.append(Constants.NEWLINE);
 
-		return buffer.toString();
-	}
+    return buffer.toString();
+  }
 
 }

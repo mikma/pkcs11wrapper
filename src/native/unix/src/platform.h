@@ -47,7 +47,7 @@
  *
  * declaration of all functions used by pkcs11wrapper.c
  *
- * @author Karl Scheibelhofer <Karl.Scheibelhofer@iaik.at>
+ * @author Karl Scheibelhofer
  */
 
 /* defines for UNIX platforms *************************************************/

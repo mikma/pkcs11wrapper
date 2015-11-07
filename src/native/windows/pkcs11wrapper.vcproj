@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="PKCS11Wrapper"
+	Name="pkcs11wrapper"
 	ProjectGUID="{0BDC0724-FFA5-4EAF-AA4F-DB79084B67F3}"
 	TargetFrameworkVersion="0"
 	>
@@ -19,8 +19,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\win_x86\release"
-			IntermediateDirectory=".\win_x86\release"
+			OutputDirectory=".\win-x86\release"
+			IntermediateDirectory=".\win-x86\release"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -45,7 +45,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\win_x86\release\PKCS11Wrapper.tlb"
+				TypeLibraryName=".\win-x86\release\pkcs11wrapper.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -57,10 +57,10 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\win_x86\release/PKCS11Wrapper.pch"
-				AssemblerListingLocation=".\win_x86\release/"
-				ObjectFile=".\win_x86\release/"
-				ProgramDataBaseFileName=".\win_x86\release/"
+				PrecompiledHeaderFile=".\win-x86\release/pkcs11wrapper.pch"
+				AssemblerListingLocation=".\win-x86\release/"
+				ObjectFile=".\win-x86\release/"
+				ProgramDataBaseFileName=".\win-x86\release/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -79,14 +79,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib jvm.lib"
-				OutputFile=".\win_x86\release/PKCS11Wrapper.dll"
+				OutputFile=".\win-x86\release/pkcs11wrapper.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories=".\win_x86\lib"
-				ProgramDatabaseFile=".\win_x86\release/PKCS11Wrapper.pdb"
+				AdditionalLibraryDirectories=".\win-x86\lib"
+				ProgramDatabaseFile=".\win-x86\release/pkcs11wrapper.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\win_x86\release/PKCS11Wrapper.lib"
+				ImportLibrary=".\win-x86\release/pkcs11wrapper.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -101,7 +101,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\win_x86\release/PKCS11Wrapper.bsc"
+				OutputFile=".\win-x86\release/pkcs11wrapper.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -115,8 +115,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory=".\win_x64\release"
-			IntermediateDirectory=".\win_x64\release"
+			OutputDirectory=".\win-x86_64\release"
+			IntermediateDirectory=".\win-x86_64\release"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -141,7 +141,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="3"
-				TypeLibraryName=".\win_x64\release\PKCS11Wrapper.tlb"
+				TypeLibraryName=".\win-x86_64\release\pkcs11wrapper.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -153,10 +153,10 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\win_x64\release/PKCS11Wrapper.pch"
-				AssemblerListingLocation=".\win_x64\release/"
-				ObjectFile=".\win_x64\release/"
-				ProgramDataBaseFileName=".\win_x64\release/"
+				PrecompiledHeaderFile=".\win-x86_64\release/pkcs11wrapper.pch"
+				AssemblerListingLocation=".\win-x86_64\release/"
+				ObjectFile=".\win-x86_64\release/"
+				ProgramDataBaseFileName=".\win-x86_64\release/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -175,14 +175,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib jvm.lib"
-				OutputFile=".\win_x64\release/PKCS11Wrapper.dll"
+				OutputFile=".\win-x86_64\release/pkcs11wrapper.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories=".\win_x64\lib"
-				ProgramDatabaseFile=".\win_x64\release/PKCS11Wrapper.pdb"
+				AdditionalLibraryDirectories=".\win-x86_64\lib"
+				ProgramDatabaseFile=".\win-x86_64\release/pkcs11wrapper.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\win_x64\release/PKCS11Wrapper.lib"
+				ImportLibrary=".\win-x86_64\release/pkcs11wrapper.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -197,7 +197,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\win_x64\release/PKCS11Wrapper.bsc"
+				OutputFile=".\win-x86_64\release/pkcs11wrapper.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -211,8 +211,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\win_x86\debug"
-			IntermediateDirectory=".\win_x86\debug"
+			OutputDirectory=".\win-x86\debug"
+			IntermediateDirectory=".\win-x86\debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -237,7 +237,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\win_x86\debug\PKCS11Wrapper.tlb"
+				TypeLibraryName=".\win-x86\debug\pkcs11wrapper.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -248,10 +248,10 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				PrecompiledHeaderFile=".\win_x86\debug/PKCS11Wrapper.pch"
-				AssemblerListingLocation=".\win_x86\debug/"
-				ObjectFile=".\win_x86\debug/"
-				ProgramDataBaseFileName=".\win_x86\debug/"
+				PrecompiledHeaderFile=".\win-x86\debug/pkcs11wrapper.pch"
+				AssemblerListingLocation=".\win-x86\debug/"
+				ObjectFile=".\win-x86\debug/"
+				ProgramDataBaseFileName=".\win-x86\debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -271,15 +271,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="jvm.lib odbc32.lib odbccp32.lib"
-				OutputFile=".\win_x86\debug/PKCS11Wrapper.dll"
+				OutputFile=".\win-x86\debug/pkcs11wrapper.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories=".\win_x86\lib"
+				AdditionalLibraryDirectories=".\win-x86\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\win_x86\debug/PKCS11Wrapper.pdb"
+				ProgramDatabaseFile=".\win-x86\debug/pkcs11wrapper.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\win_x86\debug/PKCS11Wrapper.lib"
+				ImportLibrary=".\win-x86\debug/pkcs11wrapper.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -294,7 +294,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\win_x86\debug/PKCS11Wrapper.bsc"
+				OutputFile=".\win-x86\debug/pkcs11wrapper.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -308,8 +308,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory=".\win_x64\debug"
-			IntermediateDirectory=".\win_x64\debug"
+			OutputDirectory=".\win-x86_64\debug"
+			IntermediateDirectory=".\win-x86_64\debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -334,7 +334,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="3"
-				TypeLibraryName=".\win_x64\debug\PKCS11Wrapper.tlb"
+				TypeLibraryName=".\win-x86_64\debug\pkcs11wrapper.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -345,10 +345,10 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				PrecompiledHeaderFile=".\win_x64\debug/PKCS11Wrapper.pch"
-				AssemblerListingLocation=".\win_x64\debug/"
-				ObjectFile=".\win_x64\debug/"
-				ProgramDataBaseFileName=".\win_x64\debug/"
+				PrecompiledHeaderFile=".\win-x86_64\debug/pkcs11wrapper.pch"
+				AssemblerListingLocation=".\win-x86_64\debug/"
+				ObjectFile=".\win-x86_64\debug/"
+				ProgramDataBaseFileName=".\win-x86_64\debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -368,15 +368,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="jvm.lib odbc32.lib odbccp32.lib"
-				OutputFile=".\win_x64\debug/PKCS11Wrapper.dll"
+				OutputFile=".\win-x86_64\debug/pkcs11wrapper.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories=".\win_x64\lib"
+				AdditionalLibraryDirectories=".\win-x86_64\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\win_x64\debug/PKCS11Wrapper.pdb"
+				ProgramDatabaseFile=".\win-x86_64\debug/pkcs11wrapper.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\win_x64\debug/PKCS11Wrapper.lib"
+				ImportLibrary=".\win-x86_64\debug/pkcs11wrapper.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -391,7 +391,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\win_x64\debug/PKCS11Wrapper.bsc"
+				OutputFile=".\win-x86_64\debug/pkcs11wrapper.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"

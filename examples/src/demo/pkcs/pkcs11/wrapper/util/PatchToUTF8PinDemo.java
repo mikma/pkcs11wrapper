@@ -40,7 +40,6 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-
 package demo.pkcs.pkcs11.wrapper.util;
 
 import iaik.pkcs.pkcs11.Module;
@@ -56,12 +55,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 /**
- * This demo provides a method to change the encoding of the current PIN from ASCII to 
- * UTF8 (which is now used per default). At first the demo logs in with the given PIN
- * while UTF8 encoding is disabled and changes the PIN to a dummy PIN (without special 
- * characters). Afterwards, UTF8 encoding is enabled again to change the dummy PIN to
- * the given pin using UTF8 encoding. 
- *
+ * This demo provides a method to change the encoding of the current PIN from ASCII to UTF8 (which
+ * is now used per default). At first the demo logs in with the given PIN while UTF8 encoding is
+ * disabled and changes the PIN to a dummy PIN (without special characters). Afterwards, UTF8
+ * encoding is enabled again to change the dummy PIN to the given pin using UTF8 encoding.
+ * 
  */
 public class PatchToUTF8PinDemo {
 
@@ -85,11 +83,14 @@ public class PatchToUTF8PinDemo {
     }
   }
 
+  /**
+   * Usage: PatchToUTF8PinDemo PKCS#11-module (USER|SO) [slot-index] [PIN]
+   */
   public static void main(String[] args) throws Exception {
     if (args.length < 2) {
       printUsage();
     } else {
-      try{
+      try {
         boolean userType;
         if (args[1].equalsIgnoreCase("USER")) {
           userType = Session.UserType.USER;
@@ -104,7 +105,7 @@ public class PatchToUTF8PinDemo {
         PatchToUTF8PinDemo demo = new PatchToUTF8PinDemo();
         demo.setTokenDetails(args);
         demo.patchPin(userType, pin_);
-      }finally{
+      } finally {
         pkcs11Module_.finalize(null);
         pkcs11Module_ = null;
       }
@@ -129,7 +130,8 @@ public class PatchToUTF8PinDemo {
     Session session = getSession(false);
     TokenInfo tokenInfo = session.getToken().getTokenInfo();
     if (tokenInfo.isLoginRequired()) {
-      String userTypeName = (isUserType == Session.UserType.USER) ? "user" : "security officer";
+      String userTypeName = (isUserType == Session.UserType.USER) ? "user"
+          : "security officer";
       System.out.print("Enter current " + userTypeName + " PIN: ");
       System.out.flush();
       String pinString;
@@ -141,13 +143,13 @@ public class PatchToUTF8PinDemo {
       }
       char[] pin = pinString.toCharArray();
       session.login(isUserType, pin);
-  
+
       // convert pin to utf8 encoding
       byte[] encoding = pinString.getBytes("UTF8");
       String utf8String = new String(byteToCharArray(encoding));
       session.setPIN(pin, utf8String.toCharArray());
       session.closeSession();
-  
+
       // test login with utf8 encoding
       session = getSession(true);
       session.login(isUserType, pin);
@@ -180,28 +182,28 @@ public class PatchToUTF8PinDemo {
     }
 
     Slot selectedSlot;
-    if (slotID_ >= 0){
-      if(slotID_ > slots.length-1){
+    if (slotID_ >= 0) {
+      if (slotID_ > slots.length - 1) {
         output_.println("Specified slot does not exist!");
         throw new TokenException("Specified slot does not exist!");
       }
       selectedSlot = slots[slotID_];
-    }
-    else //no slot id has been specified - therefore is -1 default value
+    } else
+      // no slot id has been specified - therefore is -1 default value
       selectedSlot = slots[0];
 
     selectedSlot.setUtf8Encoding(useUtf8Encoding);
 
     Token token = selectedSlot.getToken();
     Session session = token.openSession(Token.SessionType.SERIAL_SESSION,
-      Token.SessionReadWriteBehavior.RW_SESSION, null, null);
+        Token.SessionReadWriteBehavior.RW_SESSION, null, null);
 
     return session;
   }
 
   public static void printUsage() {
     output_
-      .println("Usage: PatchToUTF8PinDemo <PKCS#11 module> (USER|SO) [<slot-ID>] [<PIN>] ");
+        .println("Usage: PatchToUTF8PinDemo <PKCS#11 module> (USER|SO) [<slot-index>] [<PIN>] ");
     output_.println(" e.g.: PatchToUTF8PinDemo cryptoki.dll User");
     output_.println("The given DLL must be in the search path of the system.");
   }

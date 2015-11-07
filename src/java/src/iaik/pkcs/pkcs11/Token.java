@@ -49,19 +49,18 @@ import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 
 /**
- * Objects of this class represent PKCS#11 tokens. The application can get
- * information on the token, manage sessions and initialize the token. Notice
- * that objects of this class can become valid at any time. This is, the
- * user can remove the token at any time and any subsequent calls to the
- * corresponding object will fail with an exception (e.g. an exception
- * with the error code PKCS11Constants.CKR_DEVICE_REMOVED).
- * First, the application may want to find out what cryptographic algorithms
- * the token supports. Implementations of such algorithms on a token are called
- * mechanisms in the context of PKCS#11. The code for this may look something
- * like this.
- * <pre><code>
+ * Objects of this class represent PKCS#11 tokens. The application can get information on the token,
+ * manage sessions and initialize the token. Notice that objects of this class can become valid at
+ * any time. This is, the user can remove the token at any time and any subsequent calls to the
+ * corresponding object will fail with an exception (e.g. an exception with the error code
+ * PKCS11Constants.CKR_DEVICE_REMOVED). First, the application may want to find out what
+ * cryptographic algorithms the token supports. Implementations of such algorithms on a token are
+ * called mechanisms in the context of PKCS#11. The code for this may look something like this.
+ * 
+ * <pre>
+ * <code>
  *   List supportedMechanisms = Arrays.asList(token.getMechanismList());
- *
+ * 
  *   // check, if the token supports the required mechanism
  *   if (!supportedMechanisms.contains(Mechanism.RSA_PKCS)) {
  *     System.out.print("This token does not support the RSA PKCS mechanism!");
@@ -76,313 +75,297 @@ import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
  *        throw new TokenException("RSA signing not supported!");
  *     }
  *   }
- * </code></pre>
- * Being sure that the token supports the required mechanism, the application
- * can open a session. For example, it may call
- * <pre><code>
+ * </code>
+ * </pre>
+ * 
+ * Being sure that the token supports the required mechanism, the application can open a session.
+ * For example, it may call
+ * 
+ * <pre>
+ * <code>
  *  Session session = token.openSession(Token.SessionType.SERIAL_SESSION, Token.SessionReadWriteBehavior.RO_SESSION, null, null);
- * </code></pre>
+ * </code>
+ * </pre>
+ * 
  * to open a simple read-only session.
- *
+ * 
  * @see iaik.pkcs.pkcs11.Mechanism
  * @see iaik.pkcs.pkcs11.MechanismInfo
  * @see iaik.pkcs.pkcs11.Session
  * @see iaik.pkcs.pkcs11.TokenInfo
- * @author <a href="mailto:Karl.Scheibelhofer@iaik.at"> Karl Scheibelhofer </a>
+ * @author Karl Scheibelhofer
  * @version 1.0
  * @invariants (slot_ <> null)
  */
 public class Token {
 
-	/**
-	 * This interface defines constants for the type of session that should
-	 * be opened upon a call to openSession. The version 2.x of PKCS#11 only
-	 * allows serial sessions. Both types are defined just for the sake of
-	 * completeness.
-	 *
-	 * @author <a href="mailto:Karl.Scheibelhofer@iaik.at"> Karl Scheibelhofer </a>
-	 * @version 1.0
-	 * @invariants
-	 */
-	public interface SessionType {
+  /**
+   * This interface defines constants for the type of session that should be opened upon a call to
+   * openSession. The version 2.x of PKCS#11 only allows serial sessions. Both types are defined
+   * just for the sake of completeness.
+   * 
+   * @author Karl Scheibelhofer
+   * @version 1.0
+   * 
+   */
+  public interface SessionType {
 
-		/**
-		 * Indicates a parallel session. (No longer supported by PKCS#11!).
-		 */
-		public static boolean PARALLEL_SESSION = false;
+    /**
+     * Indicates a parallel session. (No longer supported by PKCS#11!).
+     */
+    public static boolean PARALLEL_SESSION = false;
 
-		/**
-		 * Indicates a serial session. This is the only type of session
-		 * currently allowed by PKCS#11.
-		 */
-		public static boolean SERIAL_SESSION = true;
+    /**
+     * Indicates a serial session. This is the only type of session currently allowed by PKCS#11.
+     */
+    public static boolean SERIAL_SESSION = true;
 
-	}
+  }
 
-	/**
-	 * This interface defines constants that specify the read/write behavior of a
-	 * session. There are read-only and read-write sessions. These constants are
-	 * used for openSession calls.
-	 *
-	 * @author <a href="mailto:Karl.Scheibelhofer@iaik.at"> Karl Scheibelhofer </a>
-	 * @version 1.0
-	 * @invariants
-	 */
-	public interface SessionReadWriteBehavior {
+  /**
+   * This interface defines constants that specify the read/write behavior of a session. There are
+   * read-only and read-write sessions. These constants are used for openSession calls.
+   * 
+   * @author Karl Scheibelhofer
+   * @version 1.0
+   * 
+   */
+  public interface SessionReadWriteBehavior {
 
-		/**
-		 * Indicates a read-only session.
-		 */
-		public static boolean RO_SESSION = false;
+    /**
+     * Indicates a read-only session.
+     */
+    public static boolean RO_SESSION = false;
 
-		/**
-		 * Indicates a read-write session.
-		 */
-		public static boolean RW_SESSION = true;
+    /**
+     * Indicates a read-write session.
+     */
+    public static boolean RW_SESSION = true;
 
-	}
+  }
 
-	/**
-	 * The reference to the slot.
-	 */
-	protected Slot slot_;
-	
+  /**
+   * The reference to the slot.
+   */
+  protected Slot slot_;
+
   /**
    * True, if UTF8 encoding is used as character encoding for character array attributes and PINs.
    */
-	protected boolean useUtf8Encoding_;
+  protected boolean useUtf8Encoding_;
 
-	/**
-	 * The constructor that takes a reference to the module and the slot ID.
-	 *
-	 * @param slot The reference to the slot.
-	 * @preconditions (module <> null)
-	 * @postconditions
-	 */
-	protected Token(Slot slot) {
-		if (slot == null) {
-			throw new NullPointerException("Argument \"slot\" must not be null.");
-		}
-		slot_ = slot;
-		useUtf8Encoding_ = slot.useUtf8Encoding_;
-	}
+  /**
+   * The constructor that takes a reference to the module and the slot ID.
+   * 
+   * @param slot
+   *          The reference to the slot.
+   * @preconditions (module <> null)
+   * 
+   */
+  protected Token(Slot slot) {
+    if (slot == null) {
+      throw new NullPointerException("Argument \"slot\" must not be null.");
+    }
+    slot_ = slot;
+    useUtf8Encoding_ = slot.useUtf8Encoding_;
+  }
 
-	/**
-	 * Compares the slot_ of this object with the other object.
-	 * Returns only true, if those are equal in both objects.
-	 *
-	 * @param otherObject The other Token object.
-	 * @return True, if other is an instance of Token and the slot_
-	 *         member varialbe of both objects are equal. False, otherwise.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public boolean equals(Object otherObject) {
-		boolean equal = false;
+  /**
+   * Compares the slot_ of this object with the other object. Returns only true, if those are equal
+   * in both objects.
+   * 
+   * @param otherObject
+   *          The other Token object.
+   * @return True, if other is an instance of Token and the slot_ member varialbe of both objects
+   *         are equal. False, otherwise.
+   */
+  public boolean equals(Object otherObject) {
+    boolean equal = false;
 
-		if (otherObject instanceof Token) {
-			Token other = (Token) otherObject;
-			equal = (this == other) || this.slot_.equals(other.slot_);
-		}
+    if (otherObject instanceof Token) {
+      Token other = (Token) otherObject;
+      equal = (this == other) || this.slot_.equals(other.slot_);
+    }
 
-		return equal;
-	}
+    return equal;
+  }
 
-	/**
-	 * Get the slot that created this Token object.
-	 *
-	 * @return The slot of this token.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public Slot getSlot() {
-		return slot_;
-	}
+  /**
+   * Get the slot that created this Token object.
+   * 
+   * @return The slot of this token.
+   */
+  public Slot getSlot() {
+    return slot_;
+  }
 
-	/**
-	 * Get the ID of this token. This is the ID of the slot this token resides in.
-	 *
-	 * @return The ID of this token.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public long getTokenID() {
-		return slot_.getSlotID();
-	}
+  /**
+   * Get the ID of this token. This is the ID of the slot this token resides in.
+   * 
+   * @return The ID of this token.
+   */
+  public long getTokenID() {
+    return slot_.getSlotID();
+  }
 
-	/**
-	 * Get information about this token.
-	 *
-	 * @return An object containing information about this token.
-	 * @exception TokenException If reading the information fails.
-	 * @preconditions
-	 * @postconditions (result <> null)
-	 */
-	public TokenInfo getTokenInfo()
-	    throws TokenException
-	{
-		CK_TOKEN_INFO ckTokenInfo = slot_.getModule().getPKCS11Module()
-		    .C_GetTokenInfo(slot_.getSlotID());
+  /**
+   * Get information about this token.
+   * 
+   * @return An object containing information about this token.
+   * @exception TokenException
+   *              If reading the information fails.
+   * 
+   * @postconditions (result <> null)
+   */
+  public TokenInfo getTokenInfo() throws TokenException {
+    CK_TOKEN_INFO ckTokenInfo = slot_.getModule().getPKCS11Module()
+        .C_GetTokenInfo(slot_.getSlotID());
 
-		return new TokenInfo(ckTokenInfo);
-	}
+    return new TokenInfo(ckTokenInfo);
+  }
 
-	/**
-	 * Get the list of mechanisms that this token supports. An application can use
-	 * this method to determine, if this token supports the required mechanism.
-	 *
-	 * @return An array of Mechanism objects. Each describes a mechansim that this
-	 *         token can perform. This array may be empty but not null.
-	 * @exception TokenException If reading the list of supported mechansisms
-	 *                           fails.
-	 * @preconditions
-	 * @postconditions (result <> null)
-	 */
-	public Mechanism[] getMechanismList()
-	    throws TokenException
-	{
-		long[] mechanismIdList = slot_.getModule().getPKCS11Module()
-		    .C_GetMechanismList(slot_.getSlotID());
-		Mechanism[] mechanisms = new Mechanism[mechanismIdList.length];
-		for (int i = 0; i < mechanisms.length; i++) {
-			mechanisms[i] = new Mechanism(mechanismIdList[i]);
-		}
+  /**
+   * Get the list of mechanisms that this token supports. An application can use this method to
+   * determine, if this token supports the required mechanism.
+   * 
+   * @return An array of Mechanism objects. Each describes a mechansim that this token can perform.
+   *         This array may be empty but not null.
+   * @exception TokenException
+   *              If reading the list of supported mechansisms fails.
+   * 
+   * @postconditions (result <> null)
+   */
+  public Mechanism[] getMechanismList() throws TokenException {
+    long[] mechanismIdList = slot_.getModule().getPKCS11Module()
+        .C_GetMechanismList(slot_.getSlotID());
+    Mechanism[] mechanisms = new Mechanism[mechanismIdList.length];
+    for (int i = 0; i < mechanisms.length; i++) {
+      mechanisms[i] = new Mechanism(mechanismIdList[i]);
+    }
 
-		return mechanisms;
-	}
+    return mechanisms;
+  }
 
-	/**
-	 * Get mor information about one supported mechanism. The application can
-	 * find out, e.g. if an algorithm supports the certain key length.
-	 *
-	 * @param mechanism A mechanism that is supported by this token.
-	 * @return An information object about the concerned mechanism.
-	 * @exception TokenException If reading the information fails, or if the
-	 *                           mechansim is not supported by this token.
-	 * @preconditions (mechanism <> null)
-	 *                and (getMechanismList() contains mechanism)
-	 * @postconditions (result <> null)
-	 */
-	public MechanismInfo getMechanismInfo(Mechanism mechanism)
-	    throws TokenException
-	{
-		long mechanismCode = mechanism.getMechanismCode();
-		CK_MECHANISM_INFO ckMechanismInfo = slot_.getModule().getPKCS11Module()
-		    .C_GetMechanismInfo(slot_.getSlotID(), mechanismCode);
+  /**
+   * Get mor information about one supported mechanism. The application can find out, e.g. if an
+   * algorithm supports the certain key length.
+   * 
+   * @param mechanism
+   *          A mechanism that is supported by this token.
+   * @return An information object about the concerned mechanism.
+   * @exception TokenException
+   *              If reading the information fails, or if the mechansim is not supported by this
+   *              token.
+   * @preconditions (mechanism <> null) and (getMechanismList() contains mechanism)
+   * @postconditions (result <> null)
+   */
+  public MechanismInfo getMechanismInfo(Mechanism mechanism) throws TokenException {
+    long mechanismCode = mechanism.getMechanismCode();
+    CK_MECHANISM_INFO ckMechanismInfo = slot_.getModule().getPKCS11Module()
+        .C_GetMechanismInfo(slot_.getSlotID(), mechanismCode);
 
-		return new MechanismInfo(ckMechanismInfo);
-	}
+    return new MechanismInfo(ckMechanismInfo);
+  }
 
-	/**
-	 * The overriding of this method should ensure that the objects of this class
-	 * work correctly in a hashtable.
-	 *
-	 * @return The hash code of this object. Gained from the slot ID.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public int hashCode() {
-		return slot_.hashCode();
-	}
+  /**
+   * The overriding of this method should ensure that the objects of this class work correctly in a
+   * hashtable.
+   * 
+   * @return The hash code of this object. Gained from the slot ID.
+   */
+  public int hashCode() {
+    return slot_.hashCode();
+  }
 
-	/**
-	 * Initialize the token. Attention: any data on the token will be lost!
-	 * An token must normally be initialized before its first use.
-	 *
-	 * @param pin If the token is not initialized yet, this PIN becomes the
-	 *            security officer (admin) PIN. If the token is already
-	 *            initialized, this PIN must be the correct security officer PIN
-	 *            of this token. Otherwise the operation will fail. If the
-	 *            token slot has build-in means to verify the user (e.g. a PIN-pad
-	 *            on the card reader), this parameter can be null.
-	 * @param label The label to give to the token. If this string is longer than
-	 *              32 characters, it will be cut off at the end to be exactly 32
-	 *              characters in length. If it is shorter than 32 characters, the
-	 *              label is filled up with the blank character (' ') to be
-	 *              exactly 32 characters in length.
-	 * @exception TokenException If the initialization fails.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public void initToken(char[] pin, String label)
-	    throws TokenException
-	{
-		char[] labelChars = Util.toPaddedCharArray(label, 32, ' ');
-		slot_.getModule().getPKCS11Module().C_InitToken(slot_.getSlotID(), pin, labelChars, useUtf8Encoding_);
-	}
+  /**
+   * Initialize the token. Attention: any data on the token will be lost! An token must normally be
+   * initialized before its first use.
+   * 
+   * @param pin
+   *          If the token is not initialized yet, this PIN becomes the security officer (admin)
+   *          PIN. If the token is already initialized, this PIN must be the correct security
+   *          officer PIN of this token. Otherwise the operation will fail. If the token slot has
+   *          build-in means to verify the user (e.g. a PIN-pad on the card reader), this parameter
+   *          can be null.
+   * @param label
+   *          The label to give to the token. If this string is longer than 32 characters, it will
+   *          be cut off at the end to be exactly 32 characters in length. If it is shorter than 32
+   *          characters, the label is filled up with the blank character (' ') to be exactly 32
+   *          characters in length.
+   * @exception TokenException
+   *              If the initialization fails.
+   */
+  public void initToken(char[] pin, String label) throws TokenException {
+    char[] labelChars = Util.toPaddedCharArray(label, 32, ' ');
+    slot_.getModule().getPKCS11Module()
+        .C_InitToken(slot_.getSlotID(), pin, labelChars, useUtf8Encoding_);
+  }
 
-	/**
-	 * Open a new session to perfom operations on this token. Notice that all
-	 * session within one application (system process) have the same login state.
-	 *
-	 * @param serialSession Must be SessionType.SERIAL_SESSION. (For the sake of
-	 *                      completeness)
-	 * @param rwSession Must be either SessionReadWriteBehavior.RO_SESSION for
-	 *                  read-only sessions or SessionReadWriteBehavior.RW_SESSION
-	 *                  for read-write sessions.
-	 * @param application Object to be supplied upon notify callback. May be null.
-	 *                   (Not implemented yet!).
-	 * @param notify For notifications via callback. may be null.
-	 *               (Not implemented yet!)
-	 * @return The newly opened session.
-	 * @exception TokenException If the session could not be opened.
-	 * @preconditions (serialSession == SessionType.SERIAL_SESSION)
-	 * @postconditions (result <> null)
-	 */
-	public Session openSession(boolean serialSession,
-	                           boolean rwSession,
-	                           Object application,
-	                           final Notify notify)
-	    throws TokenException
-	{
-		long flags = 0L;
-		flags |= (serialSession) ? PKCS11Constants.CKF_SERIAL_SESSION : 0L;
-		flags |= (rwSession) ? PKCS11Constants.CKF_RW_SESSION : 0L;
-		final Session newSession = new Session(this, -1); // we need it for the notify already here
-		CK_NOTIFY ckNotify = null;
-		if (notify != null) {
-			ckNotify = new CK_NOTIFY() {
-				public void CK_NOTIFY(long hSession, long event, Object pApplication)
-				    throws PKCS11Exception
-				{
-					boolean surrender = (event & PKCS11Constants.CKN_SURRENDER) != 0L;
-					notify.notify(newSession, surrender, pApplication);
-				}
-			};
-		}
-		long sessionHandle = slot_.getModule().getPKCS11Module()
-		    .C_OpenSession(slot_.getSlotID(), flags, application, ckNotify);
-		newSession.sessionHandle_ = sessionHandle; //now we have the session handle available
+  /**
+   * Open a new session to perfom operations on this token. Notice that all session within one
+   * application (system process) have the same login state.
+   * 
+   * @param serialSession
+   *          Must be SessionType.SERIAL_SESSION. (For the sake of completeness)
+   * @param rwSession
+   *          Must be either SessionReadWriteBehavior.RO_SESSION for read-only sessions or
+   *          SessionReadWriteBehavior.RW_SESSION for read-write sessions.
+   * @param application
+   *          Object to be supplied upon notify callback. May be null. (Not implemented yet!).
+   * @param notify
+   *          For notifications via callback. may be null. (Not implemented yet!)
+   * @return The newly opened session.
+   * @exception TokenException
+   *              If the session could not be opened.
+   * @preconditions (serialSession == SessionType.SERIAL_SESSION)
+   * @postconditions (result <> null)
+   */
+  public Session openSession(boolean serialSession, boolean rwSession,
+      Object application, final Notify notify) throws TokenException {
+    long flags = 0L;
+    flags |= (serialSession) ? PKCS11Constants.CKF_SERIAL_SESSION : 0L;
+    flags |= (rwSession) ? PKCS11Constants.CKF_RW_SESSION : 0L;
+    final Session newSession = new Session(this, -1); // we need it for the notify already here
+    CK_NOTIFY ckNotify = null;
+    if (notify != null) {
+      ckNotify = new CK_NOTIFY() {
+        public void CK_NOTIFY(long hSession, long event, Object pApplication)
+            throws PKCS11Exception {
+          boolean surrender = (event & PKCS11Constants.CKN_SURRENDER) != 0L;
+          notify.notify(newSession, surrender, pApplication);
+        }
+      };
+    }
+    long sessionHandle = slot_.getModule().getPKCS11Module()
+        .C_OpenSession(slot_.getSlotID(), flags, application, ckNotify);
+    newSession.sessionHandle_ = sessionHandle; // now we have the session handle available
 
-		return newSession;
-	}
+    return newSession;
+  }
 
-	/**
-	 * Close all open sessions of this token. All subsequently opened session will
-	 * be public sessions (i.e. not logged in) by default.
-	 *
-	 * @exception TokenException If closing all session fails.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public void closeAllSessions()
-	    throws TokenException
-	{
-		slot_.getModule().getPKCS11Module().C_CloseAllSessions(slot_.getSlotID());
-	}
+  /**
+   * Close all open sessions of this token. All subsequently opened session will be public sessions
+   * (i.e. not logged in) by default.
+   * 
+   * @exception TokenException
+   *              If closing all session fails.
+   */
+  public void closeAllSessions() throws TokenException {
+    slot_.getModule().getPKCS11Module().C_CloseAllSessions(slot_.getSlotID());
+  }
 
-	/**
-	 * Returns the string representation of this object.
-	 *
-	 * @return the string representation of this object
-	 */
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+  /**
+   * Returns the string representation of this object.
+   * 
+   * @return the string representation of this object
+   */
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
 
-		buffer.append("Token in Slot: ");
-		buffer.append(slot_.toString());
+    buffer.append("Token in Slot: ");
+    buffer.append(slot_.toString());
 
-		return buffer.toString();
-	}
+    return buffer.toString();
+  }
 
 }

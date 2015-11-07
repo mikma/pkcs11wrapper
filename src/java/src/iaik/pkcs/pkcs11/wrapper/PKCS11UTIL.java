@@ -46,25 +46,31 @@ import java.io.UnsupportedEncodingException;
 
 public class PKCS11UTIL {
 
-	/**
-	 * encodes the given charArray as UTF8 encoded byte array.
-	 * @param charArray		char array to be encoded
-	 * @return				UTF8 encoded byte array 
-	 * @throws UnsupportedEncodingException	if UTF8 encoding is not supported
-	 */
-	public static byte[] utf8Encoder(char[] charArray) throws UnsupportedEncodingException {
-			String javaString = new String(charArray);
-			return javaString.getBytes("UTF8");
-	}
-	
-	/**
-	 * decodes the given UTF8 Encoding to a char array.
-	 * @param byteArray		the UTF8 encoding
-	 * @return				the char array
-	 * @throws UnsupportedEncodingException	if UTF8 encoding is not supported
-	 */
-	public static char[] utf8Decoder(byte[] byteArray) throws UnsupportedEncodingException {
-			return new String(byteArray, "UTF8").toCharArray();
-	}
-	
+  /**
+   * encodes the given charArray as UTF8 encoded byte array.
+   * 
+   * @param charArray
+   *          char array to be encoded
+   * @return UTF8 encoded byte array
+   * @throws UnsupportedEncodingException
+   *           if UTF8 encoding is not supported
+   */
+  public static byte[] utf8Encoder(char[] charArray) throws UnsupportedEncodingException {
+    String javaString = new String(charArray);
+    return javaString.getBytes("UTF8");
+  }
+
+  /**
+   * decodes the given UTF8 Encoding to a char array.
+   * 
+   * @param byteArray
+   *          the UTF8 encoding
+   * @return the char array
+   * @throws UnsupportedEncodingException
+   *           if UTF8 encoding is not supported
+   */
+  public static char[] utf8Decoder(byte[] byteArray) throws UnsupportedEncodingException {
+    return new String(byteArray, "UTF8").toCharArray();
+  }
+
 }

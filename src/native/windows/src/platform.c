@@ -49,7 +49,7 @@
  * which are platform dependent. This includes loading a dynamic link libary,
  * retrieving the function list and unloading the dynamic link library.
  *
- * @author Karl Scheibelhofer <Karl.Scheibelhofer@iaik.at>
+ * @author Karl Scheibelhofer
  */
 
 #include <stdio.h>

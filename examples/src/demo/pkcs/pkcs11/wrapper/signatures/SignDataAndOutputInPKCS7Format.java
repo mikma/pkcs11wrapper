@@ -84,169 +84,178 @@ import demo.pkcs.pkcs11.wrapper.util.CreateKeysAndCertificate;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 
 /**
- * Creates a signature on a token. The hash is calculated outside the token.
- * The signed data and the signature are encoded into a PKCS#7 signed data
- * object. This implementation just uses raw RSA.
+ * Creates a signature on a token. The hash is calculated outside the token. The signed data and the
+ * signature are encoded into a PKCS#7 signed data object. This implementation just uses raw RSA.
  */
 public class SignDataAndOutputInPKCS7Format {
 
-	static PrintWriter output_;
+  static PrintWriter output_;
 
-	static BufferedReader input_;
-	
-	static Module pkcs11Module_;
+  static BufferedReader input_;
 
-	static {
-		try {
-			//output_ = new PrintWriter(new FileWriter("GetInfo_output.txt"), true);
-			output_ = new PrintWriter(System.out, true);
-			input_ = new BufferedReader(new InputStreamReader(System.in));
-		} catch (Throwable thr) {
-			thr.printStackTrace();
-			output_ = new PrintWriter(System.out, true);
-			input_ = new BufferedReader(new InputStreamReader(System.in));
-		}
-	}
+  static Module pkcs11Module_;
 
-	public static void main(String[] args)
-	    throws Exception
-	{
-		if (args.length < 3) {
-			printUsage();
-			throw new IOException("Missing argument!");
-		}
+  static {
+    try {
+      // output_ = new PrintWriter(new FileWriter("GetInfo_output.txt"), true);
+      output_ = new PrintWriter(System.out, true);
+      input_ = new BufferedReader(new InputStreamReader(System.in));
+    } catch (Throwable thr) {
+      thr.printStackTrace();
+      output_ = new PrintWriter(System.out, true);
+      input_ = new BufferedReader(new InputStreamReader(System.in));
+    }
+  }
 
-		String slot = ((args.length > 3)?args[3]:null);
-		String pin = ((args.length > 4)?args[4]:null);
-		Session session = initModuleAndGetSession(args[0], slot, pin);
+  /**
+   * Usage: SignDataAndOutputInPKCS7Format PKCS#11-module file-to-be-signed PKCS#7-signed-data-file
+   * [slot-id] [pin] [bot]
+   */
+  public static void main(String[] args) throws Exception {
+    if (args.length < 3) {
+      printUsage();
+      throw new IOException("Missing argument!");
+    }
 
-		// first we search for private RSA keys that we can use for signing
-		RSAPrivateKey privateSignatureKeyTemplate = new RSAPrivateKey();
-		privateSignatureKeyTemplate.getSign().setBooleanValue(Boolean.TRUE);
+    String slot = ((args.length > 3) ? args[3] : null);
+    String pin = ((args.length > 4) ? args[4] : null);
+    Session session = initModuleAndGetSession(args[0], slot, pin);
 
-		boolean bot = false;
-		if (5 < args.length) bot = true;
+    // first we search for private RSA keys that we can use for signing
+    RSAPrivateKey privateSignatureKeyTemplate = new RSAPrivateKey();
+    privateSignatureKeyTemplate.getSign().setBooleanValue(Boolean.TRUE);
 
-		KeyAndCertificate selectedSignatureKeyAndCertificate = null;
-		boolean found = false;
-		while(!found){
-		  selectedSignatureKeyAndCertificate = Util.selectKeyAndCertificate(
-  		    session, privateSignatureKeyTemplate, output_, input_, bot);
-  		if (selectedSignatureKeyAndCertificate != null && selectedSignatureKeyAndCertificate.getCertificate() != null) {
-  		  found = true;
-  		}
-  		if (!found) {
-  		  // no key with  corresponding certificate -> create them with other demo
-  		  session.closeSession();
-  	    pkcs11Module_.finalize(null);
-  		  if(args.length > 4)
-  		    CreateKeysAndCertificate.main(new String[]{args[0], "CN=myname,O=IAIK,C=AT,EMAIL=myname@iaik.at", args[3], args[4]});
-  		  else if(args.length > 3)
-  		    CreateKeysAndCertificate.main(new String[]{args[0], "CN=myname,O=IAIK,C=AT,EMAIL=myname@iaik.at", args[3]});
-  		  else
-  	      CreateKeysAndCertificate.main(new String[]{args[0], "CN=myname,O=IAIK,C=AT,EMAIL=myname@iaik.at"});
-  		  session = initModuleAndGetSession(args[0], slot, pin);
-  		}
-		}
+    boolean bot = false;
+    if (5 < args.length)
+      bot = true;
 
-		PrivateKey selectedSignatureKey = (PrivateKey) selectedSignatureKeyAndCertificate
-		    .getKey();
-		X509PublicKeyCertificate pkcs11SignerCertificate = selectedSignatureKeyAndCertificate
-		    .getCertificate();
-		X509Certificate signerCertificate = (pkcs11SignerCertificate != null) ? new X509Certificate(
-		    pkcs11SignerCertificate.getValue().getByteArrayValue()) : null;
+    KeyAndCertificate selectedSignatureKeyAndCertificate = null;
+    boolean found = false;
+    while (!found) {
+      selectedSignatureKeyAndCertificate = Util.selectKeyAndCertificate(session,
+          privateSignatureKeyTemplate, output_, input_, bot);
+      if (selectedSignatureKeyAndCertificate != null
+          && selectedSignatureKeyAndCertificate.getCertificate() != null) {
+        found = true;
+      }
+      if (!found) {
+        // no key with corresponding certificate -> create them with other demo
+        session.closeSession();
+        pkcs11Module_.finalize(null);
+        if (args.length > 4)
+          CreateKeysAndCertificate.main(new String[] { args[0],
+              "CN=myname,O=IAIK,C=AT,EMAIL=myname@iaik.at", args[3], args[4] });
+        else if (args.length > 3)
+          CreateKeysAndCertificate.main(new String[] { args[0],
+              "CN=myname,O=IAIK,C=AT,EMAIL=myname@iaik.at", args[3] });
+        else
+          CreateKeysAndCertificate.main(new String[] { args[0],
+              "CN=myname,O=IAIK,C=AT,EMAIL=myname@iaik.at" });
+        session = initModuleAndGetSession(args[0], slot, pin);
+      }
+    }
 
-		// here the interesting code starts
+    PrivateKey selectedSignatureKey = (PrivateKey) selectedSignatureKeyAndCertificate
+        .getKey();
+    X509PublicKeyCertificate pkcs11SignerCertificate = selectedSignatureKeyAndCertificate
+        .getCertificate();
+    X509Certificate signerCertificate = (pkcs11SignerCertificate != null) ? new X509Certificate(
+        pkcs11SignerCertificate.getValue().getByteArrayValue()) : null;
 
-		output_
-		    .println("################################################################################");
-		output_.println("signing data from file: " + args[1]);
+    // here the interesting code starts
 
-		InputStream dataInputStream = new FileInputStream(args[1]);
+    output_
+        .println("################################################################################");
+    output_.println("signing data from file: " + args[1]);
 
-		// we do digesting outside the card, because some cards do not support on-card hashing
-		MessageDigest digestEngine = MessageDigest.getInstance("SHA-1");
+    InputStream dataInputStream = new FileInputStream(args[1]);
 
-		// we buffer the content to have it after hashing for the PKCS#7 content
-		ByteArrayOutputStream contentBuffer = new ByteArrayOutputStream();
-		byte[] dataBuffer = new byte[1024];
-		int bytesRead;
+    // we do digesting outside the card, because some cards do not support on-card hashing
+    MessageDigest digestEngine = MessageDigest.getInstance("SHA-1");
 
-		// feed all data from the input stream to the message digest
-		while ((bytesRead = dataInputStream.read(dataBuffer)) >= 0) {
-			// hash the data
-			digestEngine.update(dataBuffer, 0, bytesRead);
-			// and buffer the data
-			contentBuffer.write(dataBuffer, 0, bytesRead);
-		}
-		byte[] contentHash = digestEngine.digest();
-		contentBuffer.close();
+    // we buffer the content to have it after hashing for the PKCS#7 content
+    ByteArrayOutputStream contentBuffer = new ByteArrayOutputStream();
+    byte[] dataBuffer = new byte[1024];
+    int bytesRead;
 
-		// create the SignedData
-		SignedData signedData = new SignedData(contentBuffer.toByteArray(),
-		    SignedData.IMPLICIT);
-		// set the certificates
-		signedData.setCertificates(new X509Certificate[] { signerCertificate });
+    // feed all data from the input stream to the message digest
+    while ((bytesRead = dataInputStream.read(dataBuffer)) >= 0) {
+      // hash the data
+      digestEngine.update(dataBuffer, 0, bytesRead);
+      // and buffer the data
+      contentBuffer.write(dataBuffer, 0, bytesRead);
+    }
+    byte[] contentHash = digestEngine.digest();
+    contentBuffer.close();
 
-		// create a new SignerInfo
-		SignerInfo signerInfo = new SignerInfo(new IssuerAndSerialNumber(signerCertificate),
-		    AlgorithmID.sha1, null);
+    // create the SignedData
+    SignedData signedData = new SignedData(contentBuffer.toByteArray(),
+        SignedData.IMPLICIT);
+    // set the certificates
+    signedData.setCertificates(new X509Certificate[] { signerCertificate });
 
-		// define the authenticated attributes
-		iaik.asn1.structures.Attribute[] authenticatedAttributes = {
-		    new Attribute(ObjectID.contentType, new ASN1Object[] { ObjectID.pkcs7_data }),
-		    new Attribute(ObjectID.signingTime,
-		        new ASN1Object[] { new ChoiceOfTime().toASN1Object() }),
-		    new Attribute(ObjectID.messageDigest, new ASN1Object[] { new OCTET_STRING(
-		        contentHash) }) };
-		// set the authenticated attributes
-		signerInfo.setAuthenticatedAttributes(authenticatedAttributes);
+    // create a new SignerInfo
+    SignerInfo signerInfo = new SignerInfo(new IssuerAndSerialNumber(signerCertificate),
+        AlgorithmID.sha1, null);
 
-		// encode the authenticated attributes, which is the data that we must sign
-		byte[] toBeSigned = DerCoder.encode(ASN.createSetOf(authenticatedAttributes, true));
+    // define the authenticated attributes
+    iaik.asn1.structures.Attribute[] authenticatedAttributes = {
+        new Attribute(ObjectID.contentType, new ASN1Object[] { ObjectID.pkcs7_data }),
+        new Attribute(ObjectID.signingTime,
+            new ASN1Object[] { new ChoiceOfTime().toASN1Object() }),
+        new Attribute(ObjectID.messageDigest, new ASN1Object[] { new OCTET_STRING(
+            contentHash) }) };
+    // set the authenticated attributes
+    signerInfo.setAuthenticatedAttributes(authenticatedAttributes);
 
-		// we do digesting outside the card, because some cards do not support on-card hashing
-		// we can use the digest engine from above
-		byte[] hashToBeSigned = digestEngine.digest(toBeSigned);
+    // encode the authenticated attributes, which is the data that we must sign
+    byte[] toBeSigned = DerCoder.encode(ASN.createSetOf(authenticatedAttributes, true));
 
-		// according to PKCS#11 building the DigestInfo structure must be done off-card
-		DigestInfo digestInfoEngine = new DigestInfo(AlgorithmID.sha1, hashToBeSigned);
+    // we do digesting outside the card, because some cards do not support on-card hashing
+    // we can use the digest engine from above
+    byte[] hashToBeSigned = digestEngine.digest(toBeSigned);
 
-		byte[] toBeEncrypted = digestInfoEngine.toByteArray();
+    // according to PKCS#11 building the DigestInfo structure must be done off-card
+    DigestInfo digestInfoEngine = new DigestInfo(AlgorithmID.sha1, hashToBeSigned);
 
-		// initialize for signing
-		session.signInit(Mechanism.get(PKCS11Constants.CKM_RSA_PKCS), selectedSignatureKey);
+    byte[] toBeEncrypted = digestInfoEngine.toByteArray();
 
-		// sign the data to be signed
-		byte[] signatureValue = session.sign(toBeEncrypted);
+    // initialize for signing
+    session.signInit(Mechanism.get(PKCS11Constants.CKM_RSA_PKCS), selectedSignatureKey);
 
-		// set the signature value in the signer info
-		signerInfo.setEncryptedDigest(signatureValue);
+    // sign the data to be signed
+    byte[] signatureValue = session.sign(toBeEncrypted);
 
-		// and add the signer info object to the PKCS#7 signed data object
-		signedData.addSignerInfo(signerInfo);
+    // set the signature value in the signer info
+    signerInfo.setEncryptedDigest(signatureValue);
 
-		output_.println("Writing signature to file: " + args[2]);
+    // and add the signer info object to the PKCS#7 signed data object
+    signedData.addSignerInfo(signerInfo);
 
-		OutputStream signatureOutput = new FileOutputStream(args[2]);
-		signedData.writeTo(signatureOutput);
-		signatureOutput.flush();
-		signatureOutput.close();
+    output_.println("Writing signature to file: " + args[2]);
 
-		output_
-		    .println("################################################################################");
+    OutputStream signatureOutput = new FileOutputStream(args[2]);
+    signedData.writeTo(signatureOutput);
+    signatureOutput.flush();
+    signatureOutput.close();
 
-		session.closeSession();
-		pkcs11Module_.finalize(null);
-	}
-	
-	private static Session initModuleAndGetSession(String pkcs11Module, String slot, String pin) throws Exception {
-	  pkcs11Module_ = Module.getInstance(pkcs11Module);
+    output_
+        .println("################################################################################");
+
+    session.closeSession();
+    pkcs11Module_.finalize(null);
+  }
+
+  private static Session initModuleAndGetSession(String pkcs11Module, String slot,
+      String pin) throws Exception {
+    pkcs11Module_ = Module.getInstance(pkcs11Module);
     pkcs11Module_.initialize(null);
 
     Token token;
-    if (slot != null) token = Util.selectToken(pkcs11Module_, output_, input_, slot);
-    else token = Util.selectToken(pkcs11Module_, output_, input_);
+    if (slot != null)
+      token = Util.selectToken(pkcs11Module_, output_, input_, slot);
+    else
+      token = Util.selectToken(pkcs11Module_, output_, input_);
     if (token == null) {
       output_.println("We have no token to proceed. Finished.");
       output_.flush();
@@ -269,19 +278,22 @@ public class SignDataAndOutputInPKCS7Format {
     }
 
     Session session;
-    if (pin != null) session = Util.openAuthorizedSession(token,
-        Token.SessionReadWriteBehavior.RW_SESSION, output_, input_, pin);
-    else session = Util.openAuthorizedSession(token,
-        Token.SessionReadWriteBehavior.RW_SESSION, output_, input_, null);
-    
-    return session;
-	}
+    if (pin != null)
+      session = Util.openAuthorizedSession(token,
+          Token.SessionReadWriteBehavior.RW_SESSION, output_, input_, pin);
+    else
+      session = Util.openAuthorizedSession(token,
+          Token.SessionReadWriteBehavior.RW_SESSION, output_, input_, null);
 
-	public static void printUsage() {
-		output_
-		    .println("Usage: SignDataAndOutputInPKCS7Format <PKCS#11 module> <file to be signed> <PKCS#7 signed data file> [<slot>] [<pin>] [bot]");
-		output_.println(" e.g.: SignDataAndOutputInPKCS7Format pk2priv.dll data.dat signedData.p7");
-		output_.println("The given DLL must be in the search path of the system.");
-	}
+    return session;
+  }
+
+  public static void printUsage() {
+    output_
+        .println("Usage: SignDataAndOutputInPKCS7Format <PKCS#11 module> <file to be signed> <PKCS#7 signed data file> [<slot-id>] [<pin>] [bot]");
+    output_
+        .println(" e.g.: SignDataAndOutputInPKCS7Format pk2priv.dll data.dat signedData.p7");
+    output_.println("The given DLL must be in the search path of the system.");
+  }
 
 }

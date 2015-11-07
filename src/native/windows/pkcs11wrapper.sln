@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PKCS11Wrapper", "PKCS11Wrapper.vcproj", "{0BDC0724-FFA5-4EAF-AA4F-DB79084B67F3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pkcs11wrapper", "pkcs11wrapper.vcproj", "{0BDC0724-FFA5-4EAF-AA4F-DB79084B67F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

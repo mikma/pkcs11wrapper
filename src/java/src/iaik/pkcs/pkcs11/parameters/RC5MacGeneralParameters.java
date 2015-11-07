@@ -46,127 +46,120 @@ import iaik.pkcs.pkcs11.wrapper.CK_RC5_MAC_GENERAL_PARAMS;
 import iaik.pkcs.pkcs11.wrapper.Constants;
 
 /**
- * This class encapsulates parameters for the algorithms
- * Mechanism.RC5_MAC_GENERAL.
- *
+ * This class encapsulates parameters for the algorithms Mechanism.RC5_MAC_GENERAL.
+ * 
  * @author Karl Scheibelhofer
  * @version 1.0
- * @invariants
+ * 
  */
 public class RC5MacGeneralParameters extends RC5Parameters {
 
-	/**
-	 * The length of the MAC produced, in bytes.
-	 */
-	protected long macLength_;
+  /**
+   * The length of the MAC produced, in bytes.
+   */
+  protected long macLength_;
 
-	/**
-	 * Create a new RC5MacGeneralParameters object with the given word size,
-	 * given rounds and the MAC length.
-	 *
-	 * @param wordSize The wordsize of RC5 cipher in bytes.
-	 * @param rounds The number of rounds of RC5 encipherment.
-	 * @param macLength The requested length of the MAC.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public RC5MacGeneralParameters(long wordSize, long rounds, long macLength) {
-		super(wordSize, rounds);
-		macLength_ = macLength;
-	}
+  /**
+   * Create a new RC5MacGeneralParameters object with the given word size, given rounds and the MAC
+   * length.
+   * 
+   * @param wordSize
+   *          The wordsize of RC5 cipher in bytes.
+   * @param rounds
+   *          The number of rounds of RC5 encipherment.
+   * @param macLength
+   *          The requested length of the MAC.
+   */
+  public RC5MacGeneralParameters(long wordSize, long rounds, long macLength) {
+    super(wordSize, rounds);
+    macLength_ = macLength;
+  }
 
-	/**
-	 * Get this parameters object as an object of the CK_RC5_CBC_PARAMS
-	 * class.
-	 *
-	 * @return This object as a CK_RC5_CBC_PARAMS object.
-	 * @preconditions
-	 * @postconditions (result <> null)
-	 */
-	public Object getPKCS11ParamsObject() {
-		CK_RC5_MAC_GENERAL_PARAMS params = new CK_RC5_MAC_GENERAL_PARAMS();
+  /**
+   * Get this parameters object as an object of the CK_RC5_CBC_PARAMS class.
+   * 
+   * @return This object as a CK_RC5_CBC_PARAMS object.
+   * 
+   * @postconditions (result <> null)
+   */
+  public Object getPKCS11ParamsObject() {
+    CK_RC5_MAC_GENERAL_PARAMS params = new CK_RC5_MAC_GENERAL_PARAMS();
 
-		params.ulWordsize = wordSize_;
-		params.ulRounds = rounds_;
-		params.ulMacLength = macLength_;
+    params.ulWordsize = wordSize_;
+    params.ulRounds = rounds_;
+    params.ulMacLength = macLength_;
 
-		return params;
-	}
+    return params;
+  }
 
-	/**
-	 * Get the length of the MAC produced, in bytes.
-	 *
-	 * @return The length of the MAC produced, in bytes.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public long getMacLength() {
-		return macLength_;
-	}
+  /**
+   * Get the length of the MAC produced, in bytes.
+   * 
+   * @return The length of the MAC produced, in bytes.
+   */
+  public long getMacLength() {
+    return macLength_;
+  }
 
-	/**
-	 * Set the length of the MAC produced, in bytes.
-	 *
-	 * @param macLength The length of the MAC produced, in bytes.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public void setMacLength(long macLength) {
-		macLength_ = macLength;
-	}
+  /**
+   * Set the length of the MAC produced, in bytes.
+   * 
+   * @param macLength
+   *          The length of the MAC produced, in bytes.
+   */
+  public void setMacLength(long macLength) {
+    macLength_ = macLength;
+  }
 
-	/**
-	 * Returns the string representation of this object. Do not parse data from
-	 * this string, it is for debugging only.
-	 *
-	 * @return A string representation of this object.
-	 */
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+  /**
+   * Returns the string representation of this object. Do not parse data from this string, it is for
+   * debugging only.
+   * 
+   * @return A string representation of this object.
+   */
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
 
-		buffer.append(super.toString());
-		buffer.append(Constants.NEWLINE);
+    buffer.append(super.toString());
+    buffer.append(Constants.NEWLINE);
 
-		buffer.append(Constants.INDENT);
-		buffer.append("Mac Length (dec): ");
-		buffer.append(macLength_);
-		// buffer.append(Constants.NEWLINE);
+    buffer.append(Constants.INDENT);
+    buffer.append("Mac Length (dec): ");
+    buffer.append(macLength_);
+    // buffer.append(Constants.NEWLINE);
 
-		return buffer.toString();
-	}
+    return buffer.toString();
+  }
 
-	/**
-	 * Compares all member variables of this object with the other object.
-	 * Returns only true, if all are equal in both objects.
-	 *
-	 * @param otherObject The other object to compare to.
-	 * @return True, if other is an instance of this class and all member
-	 *         variables of both objects are equal. False, otherwise.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public boolean equals(java.lang.Object otherObject) {
-		boolean equal = false;
+  /**
+   * Compares all member variables of this object with the other object. Returns only true, if all
+   * are equal in both objects.
+   * 
+   * @param otherObject
+   *          The other object to compare to.
+   * @return True, if other is an instance of this class and all member variables of both objects
+   *         are equal. False, otherwise.
+   */
+  public boolean equals(java.lang.Object otherObject) {
+    boolean equal = false;
 
-		if (otherObject instanceof RC5MacGeneralParameters) {
-			RC5MacGeneralParameters other = (RC5MacGeneralParameters) otherObject;
-			equal = (this == other)
-			    || (super.equals(other) && (this.macLength_ == other.macLength_));
-		}
+    if (otherObject instanceof RC5MacGeneralParameters) {
+      RC5MacGeneralParameters other = (RC5MacGeneralParameters) otherObject;
+      equal = (this == other)
+          || (super.equals(other) && (this.macLength_ == other.macLength_));
+    }
 
-		return equal;
-	}
+    return equal;
+  }
 
-	/**
-	 * The overriding of this method should ensure that the objects of this class
-	 * work correctly in a hashtable.
-	 *
-	 * @return The hash code of this object.
-	 * @preconditions
-	 * @postconditions
-	 */
-	public int hashCode() {
-		return super.hashCode() ^ ((int) macLength_);
-	}
+  /**
+   * The overriding of this method should ensure that the objects of this class work correctly in a
+   * hashtable.
+   * 
+   * @return The hash code of this object.
+   */
+  public int hashCode() {
+    return super.hashCode() ^ ((int) macLength_);
+  }
 
 }

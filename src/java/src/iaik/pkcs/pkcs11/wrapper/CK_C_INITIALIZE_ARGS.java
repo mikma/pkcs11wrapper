@@ -43,9 +43,10 @@
 package iaik.pkcs.pkcs11.wrapper;
 
 /**
- * class CK_C_INITIALIZE_ARGS contains the optional arguments for the
- * C_Initialize function.<p>
+ * class CK_C_INITIALIZE_ARGS contains the optional arguments for the C_Initialize function.
+ * <p>
  * <B>PKCS#11 structure:</B>
+ * 
  * <PRE>
  * typedef struct CK_C_INITIALIZE_ARGS {&nbsp;&nbsp;
  *   CK_CREATEMUTEX CreateMutex;&nbsp;&nbsp;
@@ -56,58 +57,64 @@ package iaik.pkcs.pkcs11.wrapper;
  *   CK_VOID_PTR pReserved;&nbsp;&nbsp;
  * } CK_C_INITIALIZE_ARGS;
  * </PRE>
- *
- * @author Karl Scheibelhofer <Karl.Scheibelhofer@iaik.at>
- * @author Martin Schläffer <schlaeff@sbox.tugraz.at>
+ * 
+ * @author Karl Scheibelhofer
+ * @author Martin Schläffer
  */
 public class CK_C_INITIALIZE_ARGS {
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_CREATEMUTEX CreateMutex;
-	 * </PRE>
-	 */
-	public CK_CREATEMUTEX CreateMutex;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_CREATEMUTEX CreateMutex;
+   * </PRE>
+   */
+  public CK_CREATEMUTEX CreateMutex;
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_DESTROYMUTEX DestroyMutex;
-	 * </PRE>
-	 */
-	public CK_DESTROYMUTEX DestroyMutex;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_DESTROYMUTEX DestroyMutex;
+   * </PRE>
+   */
+  public CK_DESTROYMUTEX DestroyMutex;
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_LOCKMUTEX LockMutex;
-	 * </PRE>
-	 */
-	public CK_LOCKMUTEX LockMutex;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_LOCKMUTEX LockMutex;
+   * </PRE>
+   */
+  public CK_LOCKMUTEX LockMutex;
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_UNLOCKMUTEX UnlockMutex;
-	 * </PRE>
-	 */
-	public CK_UNLOCKMUTEX UnlockMutex;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_UNLOCKMUTEX UnlockMutex;
+   * </PRE>
+   */
+  public CK_UNLOCKMUTEX UnlockMutex;
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_FLAGS flags;
-	 * </PRE>
-	 */
-	public long flags;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_FLAGS flags;
+   * </PRE>
+   */
+  public long flags;
 
-	/**
-	 * <B>PKCS#11:</B>
-	 * <PRE>
-	 *   CK_VOID_PTR pReserved;
-	 * </PRE>
-	 */
-	public Object pReserved;
+  /**
+   * <B>PKCS#11:</B>
+   * 
+   * <PRE>
+   * CK_VOID_PTR pReserved;
+   * </PRE>
+   */
+  public Object pReserved;
 
 }

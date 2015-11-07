@@ -59,142 +59,148 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 /**
- * This demo program uses a PKCS#11 module to calculate a hash of a given file.
- * Optionally the calcualted raw hash can be written to file. The program also
- * verifies the calculated hash with a software hash from Java.
+ * This demo program uses a PKCS#11 module to calculate a hash of a given file. Optionally the
+ * calcualted raw hash can be written to file. The program also verifies the calculated hash with a
+ * software hash from Java.
  */
 public class Digest {
 
-	public static void main(String[] args)
-	    throws IOException, TokenException, NoSuchAlgorithmException
-	{
-		if (args.length < 2) {
-			printUsage();
-			throw new IOException("Missing argument!");
-		}
+  /**
+   * Usage: Digest PKCS#11-module file-to-be-digested [digest-value-file slot-index user-PIN]
+   */
+  public static void main(String[] args) throws IOException, TokenException,
+      NoSuchAlgorithmException {
+    if (args.length < 2) {
+      printUsage();
+      throw new IOException("Missing argument!");
+    }
 
-		Module pkcs11Module = Module.getInstance(args[0]);
-		pkcs11Module.initialize(null);
+    Module pkcs11Module = Module.getInstance(args[0]);
+    pkcs11Module.initialize(null);
 
-		Slot[] slots = pkcs11Module.getSlotList(Module.SlotRequirement.TOKEN_PRESENT);
+    Slot[] slots = pkcs11Module.getSlotList(Module.SlotRequirement.TOKEN_PRESENT);
 
-		if (slots.length == 0) {
-			System.out.println("No slot with present token found!");
-			throw new TokenException("No token found!");
-		}
+    if (slots.length == 0) {
+      System.out.println("No slot with present token found!");
+      throw new TokenException("No token found!");
+    }
 
-		Slot selectedSlot = slots[0];
-		Token token = selectedSlot.getToken();
+    Slot selectedSlot;
+    if (3 < args.length)
+      selectedSlot = slots[Integer.parseInt(args[3])];
+    else
+      selectedSlot = slots[0];
+    Token token = selectedSlot.getToken();
 
-		Session session = token.openSession(Token.SessionType.SERIAL_SESSION,
-		    Token.SessionReadWriteBehavior.RO_SESSION, null, null);
-		
-		//some tokens require login
-		if(args.length > 3){
-		  session.login(Session.UserType.USER, args[3].toCharArray());
-		}
+    Session session = token.openSession(Token.SessionType.SERIAL_SESSION,
+        Token.SessionReadWriteBehavior.RO_SESSION, null, null);
 
-		System.out
-		    .println("################################################################################");
-		System.out.println("digesting data from file: " + args[1]);
+    // some tokens require login
+    if (args.length > 4)
+      session.login(Session.UserType.USER, args[4].toCharArray());
 
-		//be sure that your token can process the specified mechanism
-		Mechanism digestMechanism = Mechanism.get(PKCS11Constants.CKM_SHA_1);
+    System.out
+        .println("################################################################################");
+    System.out.println("digesting data from file: " + args[1]);
 
-		byte[] dataBuffer = new byte[4096];
-		byte[] helpBuffer;
-		int bytesRead;
+    // be sure that your token can process the specified mechanism
+    Mechanism digestMechanism = Mechanism.get(PKCS11Constants.CKM_SHA_1);
 
-		FileInputStream dataInputStream = new FileInputStream(args[1]);
+    byte[] dataBuffer = new byte[4096];
+    byte[] helpBuffer;
+    int bytesRead;
 
-		int updateCounter = 0;
-		long t0 = System.currentTimeMillis();
+    FileInputStream dataInputStream = new FileInputStream(args[1]);
 
-		// initialize for digesting
-		session.digestInit(digestMechanism);
-		// feed in all data from the input stream
-		while ((bytesRead = dataInputStream.read(dataBuffer)) >= 0) {
-			if (bytesRead < dataBuffer.length) {
-				helpBuffer = new byte[bytesRead]; // we need a buffer that only holds what to send for digesting
-				System.arraycopy(dataBuffer, 0, helpBuffer, 0, bytesRead);
-				session.digestUpdate(helpBuffer);
-			} else {
-				session.digestUpdate(dataBuffer);
-			}
-			updateCounter++;
-		}
-		byte[] digestValue = session.digestFinal();
+    int updateCounter = 0;
+    long t0 = System.currentTimeMillis();
 
-		long t1 = System.currentTimeMillis();
+    // initialize for digesting
+    session.digestInit(digestMechanism);
+    // feed in all data from the input stream
+    while ((bytesRead = dataInputStream.read(dataBuffer)) >= 0) {
+      if (bytesRead < dataBuffer.length) {
+        helpBuffer = new byte[bytesRead]; // we need a buffer that only holds what to send for
+                                          // digesting
+        System.arraycopy(dataBuffer, 0, helpBuffer, 0, bytesRead);
+        session.digestUpdate(helpBuffer);
+      } else {
+        session.digestUpdate(dataBuffer);
+      }
+      updateCounter++;
+    }
+    byte[] digestValue = session.digestFinal();
 
-		dataInputStream.close();
+    long t1 = System.currentTimeMillis();
 
-		Arrays.fill(dataBuffer, (byte) 0); // ensure that no data is left in the memory
+    dataInputStream.close();
 
-		System.out.println("The digest value is: "
-		    + new BigInteger(1, digestValue).toString(16));
-		System.out.println("Calculation took " + (t1 - t0) + " milliseconds using "
-		    + updateCounter + " update calls.");
+    Arrays.fill(dataBuffer, (byte) 0); // ensure that no data is left in the memory
 
-		if (args.length == 3) {
-			System.out.println("Writing digest value to file: " + args[2]);
+    System.out.println("The digest value is: "
+        + new BigInteger(1, digestValue).toString(16));
+    System.out.println("Calculation took " + (t1 - t0) + " milliseconds using "
+        + updateCounter + " update calls.");
 
-			FileOutputStream signatureOutput = new FileOutputStream(args[2]);
-			signatureOutput.write(digestValue);
-			signatureOutput.flush();
-			signatureOutput.close();
-		}
+    if (args.length == 2) {
+      System.out.println("Writing digest value to file: " + args[2]);
 
-		System.out
-		    .println("################################################################################");
+      FileOutputStream signatureOutput = new FileOutputStream(args[2]);
+      signatureOutput.write(digestValue);
+      signatureOutput.flush();
+      signatureOutput.close();
+    }
 
-		System.out
-		    .println("################################################################################");
-		System.out.println("verifying digest with software digest");
+    System.out
+        .println("################################################################################");
 
-		MessageDigest softwareDigestEngine = MessageDigest.getInstance("SHA-1");
+    System.out
+        .println("################################################################################");
+    System.out.println("verifying digest with software digest");
 
-		dataInputStream = new FileInputStream(args[1]);
+    MessageDigest softwareDigestEngine = MessageDigest.getInstance("SHA-1");
 
-		updateCounter = 0;
-		t0 = System.currentTimeMillis();
+    dataInputStream = new FileInputStream(args[1]);
 
-		// feed in all data from the input stream
-		while ((bytesRead = dataInputStream.read(dataBuffer)) >= 0) {
-			softwareDigestEngine.update(dataBuffer, 0, bytesRead);
-			updateCounter++;
-		}
-		byte[] softwareDigestValue = softwareDigestEngine.digest();
+    updateCounter = 0;
+    t0 = System.currentTimeMillis();
 
-		t1 = System.currentTimeMillis();
+    // feed in all data from the input stream
+    while ((bytesRead = dataInputStream.read(dataBuffer)) >= 0) {
+      softwareDigestEngine.update(dataBuffer, 0, bytesRead);
+      updateCounter++;
+    }
+    byte[] softwareDigestValue = softwareDigestEngine.digest();
 
-		dataInputStream.close();
+    t1 = System.currentTimeMillis();
 
-		Arrays.fill(dataBuffer, (byte) 0); // ensure that no data is left in the memory
+    dataInputStream.close();
 
-		System.out.println("The digest value is: "
-		    + new BigInteger(1, softwareDigestValue).toString(16));
-		System.out.println("Calculation took " + (t1 - t0) + " milliseconds using "
-		    + updateCounter + " update calls.");
+    Arrays.fill(dataBuffer, (byte) 0); // ensure that no data is left in the memory
 
-		if (Arrays.equals(digestValue, softwareDigestValue)) {
-			System.out.println("Verified Message Digest successfully");
-		} else {
-			System.out.println("Verification of Message Digest FAILED");
-		}
+    System.out.println("The digest value is: "
+        + new BigInteger(1, softwareDigestValue).toString(16));
+    System.out.println("Calculation took " + (t1 - t0) + " milliseconds using "
+        + updateCounter + " update calls.");
 
-		System.out
-		    .println("################################################################################");
+    if (Arrays.equals(digestValue, softwareDigestValue)) {
+      System.out.println("Verified Message Digest successfully");
+    } else {
+      System.out.println("Verification of Message Digest FAILED");
+    }
 
-		session.closeSession();
-		pkcs11Module.finalize(null);
-	}
+    System.out
+        .println("################################################################################");
 
-	public static void printUsage() {
-		System.out
-		    .println("Usage: Digest <PKCS#11 module> <file to be digested> [<digest value file>]");
-		System.out.println(" e.g.: Digest pk2priv.dll password data.dat digest.bin");
-		System.out.println("The given DLL must be in the search path of the system.");
-	}
+    session.closeSession();
+    pkcs11Module.finalize(null);
+  }
+
+  public static void printUsage() {
+    System.out
+        .println("Usage: Digest <PKCS#11 module> <file to be digested> [<digest value file> <slot-index> <user-PIN>]");
+    System.out.println(" e.g.: Digest pk2priv.dll data.dat digest.bin");
+    System.out.println("The given DLL must be in the search path of the system.");
+  }
 
 }

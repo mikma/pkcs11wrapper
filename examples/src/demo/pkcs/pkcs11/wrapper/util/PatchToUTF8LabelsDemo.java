@@ -40,7 +40,6 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-
 package demo.pkcs.pkcs11.wrapper.util;
 
 import iaik.pkcs.pkcs11.Mechanism;
@@ -69,12 +68,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This demo provides methods to change the encoding of key and certificate labels from
- * the old ASCII encoding to UTF8 encoding (which is now used per default). This is only 
- * necessary for special characters. patchAllLabels changes all object labels to UTF8
- * without prior checks. findAndPatchOldLabels verifies if the labels are already UTF8
- * encoded and - if not - changes their encoding to UTF8.
- *
+ * This demo provides methods to change the encoding of key and certificate labels from the old
+ * ASCII encoding to UTF8 encoding (which is now used per default). This is only necessary for
+ * special characters. patchAllLabels changes all object labels to UTF8 without prior checks.
+ * findAndPatchOldLabels verifies if the labels are already UTF8 encoded and - if not - changes
+ * their encoding to UTF8.
+ * 
  */
 public class PatchToUTF8LabelsDemo {
 
@@ -83,7 +82,7 @@ public class PatchToUTF8LabelsDemo {
   private static String testLabel3;
   private static String testLabel4 = "aNormalLabel";
   private static Module pkcs11Module_ = null;
-  
+
   static PrintWriter output_;
   static BufferedReader input_;
 
@@ -106,6 +105,9 @@ public class PatchToUTF8LabelsDemo {
     }
   }
 
+  /**
+   * Usage: PatchToUTF8LabelsDemo PKCS#11-module [slot-index] [user-PIN]
+   */
   public static void main(String[] args) throws Exception {
     if (args.length < 1) {
       printUsage();
@@ -148,9 +150,12 @@ public class PatchToUTF8LabelsDemo {
       slotID_ = Integer.parseInt(args[1]);
       pin_ = args[2];
     } else {
-      if (args.length > 0) modulename_ = args[0];
-      if (args.length > 1) slotID_ = Integer.parseInt(args[1]);
-      if (args.length > 2) pin_ = args[2];
+      if (args.length > 0)
+        modulename_ = args[0];
+      if (args.length > 1)
+        slotID_ = Integer.parseInt(args[1]);
+      if (args.length > 2)
+        pin_ = args[2];
     }
   }
 
@@ -162,7 +167,7 @@ public class PatchToUTF8LabelsDemo {
       if (objects[0] instanceof Key) {
         Key key = (Key) objects[0];
         char[] label = key.getLabel().getCharArrayValue();
-        if(label != null){
+        if (label != null) {
           String utf8String = isAlreadyUtf8(label);
           if (utf8String == null) {
             System.out.print(new String(label) + " - will be patched");
@@ -195,28 +200,29 @@ public class PatchToUTF8LabelsDemo {
   private void toUtf8(Key key) throws Exception {
     // convert label
     char[] label = key.getLabel().getCharArrayValue();
-    if(label != null){
+    if (label != null) {
       byte[] encoding = new String(label).getBytes("UTF8");
       String utf8String = new String(byteToCharArray(encoding));
       // can't overwrite existing entry
       Session session = getSession(false);
       GenericTemplate template = new GenericTemplate();
-      CharArrayAttribute labelAttr = new CharArrayAttribute(new Long(PKCS11Constants.CKA_LABEL));
+      CharArrayAttribute labelAttr = new CharArrayAttribute(new Long(
+          PKCS11Constants.CKA_LABEL));
       labelAttr.setCharArrayValue(utf8String.toCharArray());
       template.addAttribute(labelAttr);
-      try{
+      try {
         session.setAttributeValues(key, template);
-      }catch(PKCS11Exception e){
-        if(e.getErrorCode() == PKCS11Constants.CKR_ATTRIBUTE_READ_ONLY){
-          //try copy object
+      } catch (PKCS11Exception e) {
+        if (e.getErrorCode() == PKCS11Constants.CKR_ATTRIBUTE_READ_ONLY) {
+          // try copy object
           session.copyObject(key, template);
-          //if everything OK delete old object
+          // if everything OK delete old object
           session.destroyObject(key);
-        }else{
+        } else {
           throw e;
         }
       }
-          
+
     }
   }
 
@@ -240,7 +246,7 @@ public class PatchToUTF8LabelsDemo {
         Key key = (Key) objects[0];
         String label = "null";
         char[] labelChars = key.getLabel().getCharArrayValue();
-        if(labelChars != null){
+        if (labelChars != null) {
           label = new String(labelChars);
         }
         System.out.println(label);
@@ -253,12 +259,11 @@ public class PatchToUTF8LabelsDemo {
   private void deleteAllDemoEntries() throws Exception {
     Session session = getSession(true);
     GenericTemplate template = new GenericTemplate();
-    String[] labels = new String[]{
-      testLabel1, testLabel2, testLabel3, testLabel4
-    };
-    for (int i=0; i<labels.length; i++) {
+    String[] labels = new String[] { testLabel1, testLabel2, testLabel3, testLabel4 };
+    for (int i = 0; i < labels.length; i++) {
       String label = labels[i];
-      CharArrayAttribute attribute = new CharArrayAttribute(new Long(PKCS11Constants.CKA_LABEL));
+      CharArrayAttribute attribute = new CharArrayAttribute(new Long(
+          PKCS11Constants.CKA_LABEL));
       attribute.setCharArrayValue(label.toCharArray());
       template.addAttribute(attribute);
       session.findObjectsInit(template);
@@ -291,10 +296,8 @@ public class PatchToUTF8LabelsDemo {
     Session session = getSession(false);
     SecretKey template;
     Mechanism keyGenerationMechanism;
-    List supportedMechanisms = Arrays.asList(session.getToken()
-      .getMechanismList());
-    if (supportedMechanisms.contains(Mechanism
-      .get(PKCS11Constants.CKM_AES_KEY_GEN))) {
+    List supportedMechanisms = Arrays.asList(session.getToken().getMechanismList());
+    if (supportedMechanisms.contains(Mechanism.get(PKCS11Constants.CKM_AES_KEY_GEN))) {
       keyGenerationMechanism = Mechanism.get(PKCS11Constants.CKM_AES_KEY_GEN);
       AESSecretKey aesTemplate = new AESSecretKey();
       aesTemplate.getLabel().setCharArrayValue(label.toCharArray());
@@ -302,33 +305,28 @@ public class PatchToUTF8LabelsDemo {
       aesTemplate.getValueLen().setLongValue(new Long(16));
       template = aesTemplate;
     } else if (supportedMechanisms.contains(Mechanism
-      .get(PKCS11Constants.CKM_GENERIC_SECRET_KEY_GEN))) {
-      keyGenerationMechanism = Mechanism
-        .get(PKCS11Constants.CKM_GENERIC_SECRET_KEY_GEN);
+        .get(PKCS11Constants.CKM_GENERIC_SECRET_KEY_GEN))) {
+      keyGenerationMechanism = Mechanism.get(PKCS11Constants.CKM_GENERIC_SECRET_KEY_GEN);
       GenericSecretKey genericTemplate = new GenericSecretKey();
       genericTemplate.getLabel().setCharArrayValue(label.toCharArray());
       genericTemplate.getToken().setBooleanValue(Boolean.TRUE);
       genericTemplate.getValueLen().setLongValue(new Long(16));
       template = genericTemplate;
     } else {
-      output_
-        .println("Mechanisms for generic or aes key generation not supported.");
+      output_.println("Mechanisms for generic or aes key generation not supported.");
       return false;
     }
 
     session.generateKey(keyGenerationMechanism, template);
     return true;
   }
-  
-  private Session initToken(boolean useUtf8Encoding)
-    throws TokenException,
-    IOException {
-    if(pkcs11Module_ == null){
+
+  private Session initToken(boolean useUtf8Encoding) throws TokenException, IOException {
+    if (pkcs11Module_ == null) {
       pkcs11Module_ = Module.getInstance(modulename_);
       pkcs11Module_.initialize(null);
     }
-    Slot[] slots = pkcs11Module_
-      .getSlotList(Module.SlotRequirement.TOKEN_PRESENT);
+    Slot[] slots = pkcs11Module_.getSlotList(Module.SlotRequirement.TOKEN_PRESENT);
 
     if (slots.length == 0) {
       output_.println("No slot with present token found!");
@@ -345,7 +343,7 @@ public class PatchToUTF8LabelsDemo {
 
     Token token = selectedSlot.getToken();
     Session session = token.openSession(Token.SessionType.SERIAL_SESSION,
-      Token.SessionReadWriteBehavior.RW_SESSION, null, null);
+        Token.SessionReadWriteBehavior.RW_SESSION, null, null);
 
     // if we have to user PIN login user
     if (pin_ != null && !loggedIn_) {
@@ -371,7 +369,7 @@ public class PatchToUTF8LabelsDemo {
 
   public static void printUsage() {
     output_
-      .println("Usage: PatchToUTF8LabelsDemo <PKCS#11 module> [<slot>] [<user-PIN>]");
+        .println("Usage: PatchToUTF8LabelsDemo <PKCS#11 module> [<slot-index>] [<user-PIN>]");
     output_.println(" e.g.: PatchToUTF8LabelsDemo cryptoki.dll");
     output_.println("The given DLL must be in the search path of the system.");
   }

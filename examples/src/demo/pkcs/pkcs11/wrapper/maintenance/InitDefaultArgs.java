@@ -57,45 +57,43 @@ import iaik.pkcs.pkcs11.TokenException;
  */
 public class InitDefaultArgs {
 
-	static PrintWriter output_;
+  static PrintWriter output_;
 
-	static {
-		try {
-			//output_ = new PrintWriter(new FileWriter("GetInfo_output.txt"), true);
-			output_ = new PrintWriter(System.out, true);
-		} catch (Throwable thr) {
-			thr.printStackTrace();
-			output_ = new PrintWriter(System.out, true);
-		}
-	}
+  static {
+    try {
+      // output_ = new PrintWriter(new FileWriter("GetInfo_output.txt"), true);
+      output_ = new PrintWriter(System.out, true);
+    } catch (Throwable thr) {
+      thr.printStackTrace();
+      output_ = new PrintWriter(System.out, true);
+    }
+  }
 
-	public static void main(String[] args)
-	    throws IOException, TokenException
-	{
-		if ((args.length == 1) || (args.length == 2)) {
-			output_
-			    .println("################################################################################");
-			output_.println("load and initialize module \"" + args[0]
-			    + "\" using default InitializeArgs");
-			output_.flush();
-			Module pkcs11Module = Module.getInstance(args[0]);
-			InitializeArgs initArgs = new DefaultInitializeArgs(new DefaultMutexHandler(),
-			    false, true);
-			pkcs11Module.initialize(initArgs);
+  public static void main(String[] args) throws IOException, TokenException {
+    if ((args.length == 1) || (args.length == 2)) {
+      output_
+          .println("################################################################################");
+      output_.println("load and initialize module \"" + args[0]
+          + "\" using default InitializeArgs");
+      output_.flush();
+      Module pkcs11Module = Module.getInstance(args[0]);
+      InitializeArgs initArgs = new DefaultInitializeArgs(new DefaultMutexHandler(),
+          false, true);
+      pkcs11Module.initialize(initArgs);
 
-			Info info = pkcs11Module.getInfo();
-			output_.println(info);
-			output_
-			    .println("################################################################################");
-		} else {
-			printUsage();
-		}
-		System.gc(); // to finalize and disconnect the pkcs11Module
-	}
+      Info info = pkcs11Module.getInfo();
+      output_.println(info);
+      output_
+          .println("################################################################################");
+    } else {
+      printUsage();
+    }
+    System.gc(); // to finalize and disconnect the pkcs11Module
+  }
 
-	protected static void printUsage() {
-		output_.println("InitDefaultArgs <PKCS#11 module name>");
-		output_.println("e.g.: InitDefaultArgs slbck.dll");
-	}
+  protected static void printUsage() {
+    output_.println("InitDefaultArgs <PKCS#11 module name>");
+    output_.println("e.g.: InitDefaultArgs slbck.dll");
+  }
 
 }
